@@ -3,6 +3,7 @@ The script for the full pipeline is at script.sh
 
 
 ## To set up datasets:
+all datasets must be placed in directory called `data`
 Hard MNIST:
 Clone https://github.com/jayaneetha/colorized-MNIST, then run `python hard_mnist.py`
 

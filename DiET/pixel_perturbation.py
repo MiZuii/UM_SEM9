@@ -308,7 +308,7 @@ def main():
     args = parser.parse_args()
 
     device = "cuda"
-    batch_sz = 128
+    batch_sz = 32
     p=args.p
     
 
@@ -346,7 +346,7 @@ def main():
 
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    expl_methods = {"GRADCAM":GradCAM, "SMOOTHGRAD": SmoothGrad, "GRAD":InputGradient, "SimpleFullGrad":SimpleFullGrad} 
+    expl_methods = {"GRADCAM":GradCAM, "SMOOTHGRAD": SmoothGrad, "GRAD":InputGradient, "SimpleFullGrad":SimpleFullGrad}
 
     test_loss, test_acc = test(model, test_loader, loss_fn, device)
     print("ORIGINAL TEST ACCURACY (ON UNSIMPLIFIED DATASET):", test_acc)

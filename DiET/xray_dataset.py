@@ -90,7 +90,46 @@ def load_xray_from_disk(data_path, args):
 
     return train_loader, test_loader
 
+import os
 
+def get_label_index(filepath):
+    """
+    Determines the class index (0=NORMAL, 1=BACTERIA, 2=VIRUS) 
+    based on the parent folder name or file name prefix.
+    
+    Returns:
+        0: NORMAL
+        1: BACTERIA (Pneumonia subtype)
+        2: VIRUS (Pneumonia subtype)
+        -1: Unknown or unclassified file (will be skipped)
+    """
+    
+    # 1. Check folder name first (standard structure: train/NORMAL/, train/BACTERIA/, train/VIRUS/)
+    label_folder = os.path.basename(os.path.dirname(filepath)).upper()
+    
+    if label_folder == "NORMAL":
+        return 0
+    elif label_folder == "BACTERIA":
+        return 1
+    elif label_folder == "VIRUS":
+        return 2
+
+    # 2. Check file name prefix (for collapsed/mixed structures, e.g., inside a generic 'PNEUMONIA' folder)
+    # File name examples: BACTERIA-30629-0001.jpeg, NORMAL-74708-0001.jpeg
+    filename_upper = os.path.basename(filepath).upper()
+    if filename_upper.startswith("NORMAL"):
+        return 0
+    elif filename_upper.startswith("BACTERIA"):
+        return 1
+    elif filename_upper.startswith("VIRUS"):
+        return 2
+    
+    # If the file belongs to a generic PNEUMONIA folder, but the filename is not specific, skip it.
+    if label_folder == "PNEUMONIA":
+         return -1
+    
+    # If no clear match is found, return -1 to indicate the file should be skipped.
+    return -1
 
 def load_xray_from_cpu(data_path, args):
     """
@@ -110,9 +149,32 @@ def load_xray_from_cpu(data_path, args):
     opp_test_imgs = []
     opp_test_labels = []
 
-    train_files = glob.glob(data_path + "train/*/*")
-    train_files += glob.glob(data_path + "val/*/*")
-    test_files = glob.glob(data_path + "test/*/*")
+    files = glob.glob(data_path + "/*/*")
+    
+    class_groups = {0: [], 1: [], 2: []}
+            
+    for f in files:
+        label = get_label_index(f)
+        if label in class_groups:
+            class_groups[label].append(f)
+
+    # Perform 80/20 split on each group and combine
+    train_files = []
+    test_files = []
+    
+    for class_label, files in class_groups.items():
+        if not files:
+            continue
+            
+        random.shuffle(files)
+        split_idx = int(len(files) * 0.8)
+        
+        train_files.extend(files[:split_idx])
+        test_files.extend(files[split_idx:])
+
+    # Reshuffle the combined lists to mix classes in the final datasets
+    random.shuffle(train_files)
+    random.shuffle(test_files)
 
     target_resolution = (224, 224)
     transform = transforms.Compose([
@@ -120,7 +182,7 @@ def load_xray_from_cpu(data_path, args):
             transforms.ToTensor(),
         ])
 
-    
+
     for i, f in enumerate(train_files):
 
         if f[-4:] != "jpeg":
@@ -445,7 +507,7 @@ def test_verifiability(model, test_loader, gt_test_loader, device):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-data_dir", default="../data/chest_xray/", type=str, help="path to dataset")
+    parser.add_argument("-data_dir", default="data/chest_xray/", type=str, help="path to dataset")
     parser.add_argument("-out_path", default="trained_models/chest_xray_rn34.pth", type=str, help="out path for train model")
     parser.add_argument("-bs", default=256, type=int, help="train batch size")
     parser.add_argument("-e", default=10, type=int, help="number epochs")

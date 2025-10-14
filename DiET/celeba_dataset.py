@@ -255,7 +255,7 @@ def test(model, epoch, test_loader, loss_fn, device):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-data_dir", default="../data/aligned_celeba/img_align_celeba/", type=str, help="path to dataset")
+    parser.add_argument("-data_dir", default="data/aligned_celeba/img_align_celeba/", type=str, help="path to dataset")
     parser.add_argument("-out_path", default="trained_models/a_celeba_rn34.pth", type=str, help="out path for train model")
     parser.add_argument("-bs", default=256, type=int, help="train batch size")
     parser.add_argument("-e", default=10, type=int, help="number epochs")

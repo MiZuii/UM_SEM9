@@ -67,8 +67,8 @@ def construct_data(path, out_path):
 
 def main():
 
-    construct_data("data/colorized-MNIST/training/*/*", "data/hard_mnist/training/")
-    construct_data("data/colorized-MNIST/testing/*/*", "data/hard_mnist/testing/")
+    construct_data("data/colorized-MNIST/training/*/*", "data/hard_mnist/training")
+    construct_data("data/colorized-MNIST/testing/*/*", "data/hard_mnist/testing")
     print("constructed hard MNIST dataset")
 
     
