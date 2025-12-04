@@ -8,7 +8,15 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from math import isclose
 
+
+# -------------------------------------------------------- #
+#                 DATASET LOADING UTILITIES                #
+# -------------------------------------------------------- #
 
 batch_sz = 16
 
@@ -65,10 +73,9 @@ def load_mnist_from_disk(data_path):
 
     return train_imgs, train_labels, test_imgs, test_labels
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from math import isclose
+# -------------------------------------------------------- #
+#                  GRADCAM IMPLEMENTATION                  #
+# -------------------------------------------------------- #
 
 class GradCAMExtractor:
     #Extract tensors needed for Gradcam using hooks
@@ -140,24 +147,124 @@ class GradCAM():
         cam = (F.relu(features)* grads).sum(1, keepdim=True)
         cam_resized = F.interpolate(F.relu(cam), size=image.size(2), mode='bilinear', align_corners=True)
         return cam_resized
-
-def test_model(model, test_loader, idx, device, model_name):
-
-    # Function generating Grad-CAM visualization on single image from the test set
     
-    # choose the datapoint from test loader
+# -------------------------------------------------------- #
+#            INTEGRATED GRADIENTS IMPLEMENTATION           #
+# -------------------------------------------------------- #
+
+class IntegratedGradients():
+
+    def __init__(self, model):
+        self.model = model
+        self.model.eval()
+
+    def generate_images_on_linear_path(self, input_image, steps):
+        # Generate scaled inputs: shape (steps, C, H, W)
+        # Baseline is assumed to be black (zeros)
+        step_list = torch.arange(steps + 1, device=input_image.device).view(-1, 1, 1, 1) / steps
+        return input_image * step_list
+
+    def saliency(self, input_image, target_class=None, steps=50):
+        # Determine target class if not provided
+        if target_class is None:
+            with torch.no_grad():
+                output = self.model(input_image)
+                target_class = output.argmax(dim=1).item()
+
+        # Generate interpolated images
+        scaled_images = self.generate_images_on_linear_path(input_image, steps)
+        scaled_images.requires_grad = True
+
+        # Run forward pass on all scaled images (batch processing)
+        # Note: If memory is an issue, this can be chunked
+        output = self.model(scaled_images)
+        
+        # Get score for the target class
+        score = output[:, target_class].sum()
+        
+        # Clear previous grads
+        self.model.zero_grad()
+        
+        # Backward pass to get gradients
+        score.backward()
+        
+        # gradients shape: (steps+1, C, H, W)
+        gradients = scaled_images.grad
+        
+        # Average gradients (Riemann approximation of integral)
+        avg_gradients = torch.mean(gradients[:-1], dim=0)
+
+        # IG = (Input - Baseline) * AvgGrad
+        # Since Baseline is 0, IG = Input * AvgGrad
+        integrated_gradients = input_image.squeeze(0) * avg_gradients
+
+        # Convert to single channel saliency map (average across RGB channels)
+        saliency_map = torch.mean(torch.abs(integrated_gradients), dim=0).unsqueeze(0).unsqueeze(0)
+        
+        return saliency_map
+    
+# -------------------------------------------------------- #
+#                          HELPERS                         #
+# -------------------------------------------------------- #
+
+def save_heatmap_and_blend(heatmap_tensor, original_image_tensor, output_prefix, blend=True):
+    """
+    Saves a raw heatmap and optionally a blended version (like DiET presentation).
+    """
+    # 1. Prepare Heatmap
+    heatmap = heatmap_tensor.squeeze().cpu().detach().numpy()
+    heatmap = (heatmap - np.min(heatmap)) / (np.max(heatmap) - np.min(heatmap) + 1e-10)
+    
+    # Save raw grayscale heatmap (Like GradCAM)
+    heatmap_uint8 = (heatmap * 255).astype(np.uint8)
+    Image.fromarray(heatmap_uint8).save(f"{output_prefix}_grayscale.png")
+
+    if blend:
+        # 2. Prepare Colored Heatmap (Like DiET)
+        cmap = plt.get_cmap('jet')
+        heatmap_colored = cmap(heatmap)[:,:,:3] 
+        heatmap_colored = (heatmap_colored * 255).astype(np.uint8)
+        Image.fromarray(heatmap_colored).save(f"{output_prefix}_colored.png")
+
+        # 3. Blend with Original
+        original_image_np = original_image_tensor.permute(1, 2, 0).cpu().numpy()
+        original_image_np = (original_image_np * 255).astype(np.uint8)
+        
+        heatmap_h, heatmap_w = heatmap_colored.shape[:2]
+        original_image_resized = cv2.resize(original_image_np, (heatmap_w, heatmap_h))
+        
+        blended_image = cv2.addWeighted(original_image_resized, 0.6, heatmap_colored, 0.4, 0)
+        Image.fromarray(blended_image).save(f"{output_prefix}_blended.png")
+
+# --- Testing Functions ---
+
+def test_model_gradcam(model, test_loader, idx, device, model_name, out="test"):
+
+    # create dir gradcam
+    os.makedirs(f"{out}/gradcam", exist_ok=True)
+
     tested_image = test_loader.dataset[idx][1].unsqueeze(0).to(device)
     tested_label = test_loader.dataset[idx][2]
 
     GradCAM_computer = GradCAM(model)
     cam = GradCAM_computer.saliency(tested_image, target_class=torch.tensor([tested_label]).to(device))
     
-    # generate heatmap
-    heatmap = cam.squeeze().cpu().detach().numpy()
-    heatmap = (heatmap - np.min(heatmap)) / (np.max(heatmap) - np.min(heatmap) + 1e-10)
-    heatmap = (heatmap * 255).astype(np.uint8)
-    heatmap = Image.fromarray(heatmap)
-    heatmap.save(f"{model_name}_gradcam.png")
+    # Using the standardized visualizer now
+    original_img = test_loader.dataset[idx][1]
+    save_heatmap_and_blend(cam, original_img, f"{out}/gradcam/{model_name}", blend=True)
+
+def test_model_ig(model, test_loader, idx, device, model_name, out="test"):
+    os.makedirs(f"{out}/ig", exist_ok=True)
+    tested_image = test_loader.dataset[idx][1].unsqueeze(0).to(device)
+    tested_label = test_loader.dataset[idx][2]
+
+    IG_computer = IntegratedGradients(model)
+    # steps=50 is usually sufficient for ResNet
+    ig_map = IG_computer.saliency(tested_image, target_class=tested_label, steps=50)
+
+    # Visualize similar to DiET (Colored + Blended)
+    original_img = test_loader.dataset[idx][1]
+    save_heatmap_and_blend(ig_map, original_img, f"{out}/ig/{model_name}", blend=True)
 
 
 if __name__ == "__main__":
@@ -191,48 +298,29 @@ if __name__ == "__main__":
     cmp_model_path = cmp_model_path.to(device)
     cmp_model_path.eval()
 
-    test_model(base_model, test_loader, idx, device, "base_model")
-    test_model(cmp_model_path, test_loader, idx, device, "diet_model")
+    print("Testing gradcam")
+    test_model_gradcam(base_model, test_loader, idx, device, "base_model")
+    test_model_gradcam(cmp_model_path, test_loader, idx, device, "diet_model")
 
-    # generate heatmap from DiET mask
+    print("Testing IG")
+    test_model_ig(base_model, test_loader, idx, device, "base_model")
+    test_model_ig(cmp_model_path, test_loader, idx, device, "diet_model")
+
+    print("Generating heatmap for DiET")
+    # Get mask for the idx from calculated masks
     ups = torch.nn.Upsample(scale_factor=8, mode='bilinear')
     test_mask = torch.load("DiET/mnist_ups8_outdir/test_mask.pt")
 
-    mask_for_image_0 = test_mask[idx]
+    mask_for_image = test_mask[idx]
 
     # upsample the mask to the image resolution (224x224)
     # .unsqueeze(0).unsqueeze(0) adds batch and channel dimensions required by nn.Upsample
-    heatmap_tensor = ups(mask_for_image_0.unsqueeze(0))
+    heatmap_tensor = ups(mask_for_image.unsqueeze(0))
+    original_img = test_loader.dataset[idx][1]
+    save_heatmap_and_blend(heatmap_tensor, original_img, "test/diet_mask_heatmap", blend=True)
 
-    # convert tensor to a numpy array, removing extra dimensions
-    heatmap = heatmap_tensor.squeeze().cpu().detach().numpy()
 
-    # normalize the heatmap to range [0, 1] for visualization
-    heatmap = (heatmap - np.min(heatmap)) / (np.max(heatmap) - np.min(heatmap) + 1e-10)
-
-    cmap = plt.get_cmap('jet') # 'jet' colormap goes from blue (low) to red (high)
-    heatmap_colored = cmap(heatmap)[:,:,:3] # Get RGB, discard alpha
-    heatmap_colored = (heatmap_colored * 255).astype(np.uint8)
-    heatmap_colored_image = Image.fromarray(heatmap_colored)
-    heatmap_colored_image.save("diet_mask_heatmap_colored.png")
-
-    # --- Blend the colored heatmap with the original image ---
-    # Retrieve the original image (datapoint at index 0) from the test_loader
-    original_image_tensor = test_loader.dataset[idx][1] # C, H, W
-    original_image_np = original_image_tensor.permute(1, 2, 0).cpu().numpy() # H, W, C
-    original_image_np = (original_image_np * 255).astype(np.uint8) # Scale to 0-255
-
-    # Resize the original image to match the heatmap size if necessary (should already be 224x224)
-    # This step is good for robustness in case dimensions differ
-    heatmap_h, heatmap_w = heatmap_colored.shape[:2]
-    original_image_resized = cv2.resize(original_image_np, (heatmap_w, heatmap_h))
-
-    # Blend the images using OpenCV's addWeighted
-    # alpha is the weight for the first image, beta for the second
-    # gamma is a scalar added to each sum
-    blended_image = cv2.addWeighted(original_image_resized, 0.6, heatmap_colored, 0.4, 0)
-    blended_image_pil = Image.fromarray(blended_image)
-    blended_image_pil.save("diet_mask_heatmap_blended.png")
-
-    original_image = Image.fromarray(original_image_resized)
-    original_image.save("original_image.png")
+    original_img = test_loader.dataset[idx][1]
+    original_img_np = original_img.permute(1, 2, 0).cpu().numpy()
+    original_img_np = (original_img_np * 255).astype(np.uint8)
+    Image.fromarray(original_img_np).save("test/original_image.png")

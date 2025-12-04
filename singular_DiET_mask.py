@@ -9,8 +9,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import time
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from math import isclose
 
 batch_sz = 16
+
+# -------------------------------------------------------- #
+#                 DATASET LOADING UTILITIES                #
+# -------------------------------------------------------- #
 
 class DatasetfromDisk(torch.utils.data.Dataset):
 
@@ -65,10 +73,9 @@ def load_mnist_from_disk(data_path):
 
     return train_imgs, train_labels, test_imgs, test_labels
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from math import isclose
+# -------------------------------------------------------- #
+#                  GRADCAM IMPLEMENTATION                  #
+# -------------------------------------------------------- #
 
 class GradCAMExtractor:
     #Extract tensors needed for Gradcam using hooks
@@ -140,6 +147,10 @@ class GradCAM():
         cam = (F.relu(features)* grads).sum(1, keepdim=True)
         cam_resized = F.interpolate(F.relu(cam), size=image.size(2), mode='bilinear', align_corners=True)
         return cam_resized
+
+# -------------------------------------------------------- #
+#         DIET SINGULAR DISTILLATION IMPLEMENTATION        #
+# -------------------------------------------------------- #
 
 def print_mask_metrics(metrics):
 

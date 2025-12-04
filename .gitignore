@@ -6,7 +6,11 @@
 .env
 *.log
 .idea/
-
+.venv
 
 # dedicated
 DiET/data
+pngs
+data
+models
+test
