@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader, Subset
 from torchvision.transforms import Compose, Resize, CenterCrop, ToTensor, Normalize
 from torchvision.models import resnet50
 from torch.autograd import Variable
+from torchvision.datasets import CIFAR10
 
 # other imports
 from zennit.image import imsave
@@ -21,7 +22,10 @@ from mmpretrain import get_model
 from image_dataloader_from_file import *
 
 # define and load the models here
-my_model = mmpretrain.get_model('/path/to/model_config.py', pretrained='/path/to/pretrained_checkpoint.pth')
+config_path = '../../pretraining/mmpretrain/linear_probe_cifar10.py'
+checkpoint_path = '../../pretraining/mmpretrain/work_dirs/linear_probe_cifar10/epoch_4.pth'
+
+my_model = mmpretrain.get_model(config_path, pretrained=checkpoint_path)
 
 model_dict = {
         'my_model': my_model,
@@ -61,7 +65,7 @@ seed = 0xDEADBEEF
 cut_off = 0.95
 max_class_count = 100
 
-confident_images_dir = str(cut_off)+"_confident_images_subset_dir/"
+confident_images_dir = "cifar10_confident_images/"
 os.makedirs(confident_images_dir, exist_ok = True)
 
 
@@ -90,8 +94,8 @@ def main(
     ])
 
     # define dataloader and dataset
-    dataset = image_loader(data_file, data_root, input_transforms=transform)
-    loader = DataLoader(dataset, shuffle=shuffle, batch_size=batch_size)
+    dataset = CIFAR10(root='/media/hiro/T7/UM_datasets/data/cifar-10-batches-py', train=False, download=False, transform=transform)
+    loader = DataLoader(dataset, shuffle=False, batch_size=1)
 
     for model_name in model_dict:
         model = model_dict[model_name]
@@ -129,13 +133,15 @@ def main(
         for model_name in model_dict:
             model = model_dict[model_name]
 
-            if 'std' in model_name:
-                output = model(data_norm)
-                output_probs = nn.Softmax(dim=1)(output)
-            elif 'bcos' in model_name:
+            # CHECK 1: If it is a B-Cos model
+            if 'bcos' in model_name:
                 bcos_data = torch.cat([data, 1-data], dim=1)
                 output = model(bcos_data.to(device))
                 output_probs = nn.Sigmoid()(output)
+            # CHECK 2: Default for everything else (Standard ResNet / 'my_model')
+            else:
+                output = model(data_norm)
+                output_probs = nn.Softmax(dim=1)(output)
 
             #print(model_name, output_probs.shape)
 

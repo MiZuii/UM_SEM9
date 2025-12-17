@@ -30,8 +30,11 @@ from interpretability.utils import * # for bcos visualizations
 from lime_attribution import Lime
 
 # define and load the models here                                                             
-my_model = mmpretrain.get_model('/path/to/model_config.py', pretrained='/path/to/pretrained_checkpoint.pth')
-                                                                                              
+config_path = '../../pretraining/mmpretrain/linear_probe_cifar10.py'
+checkpoint_path = '../../pretraining/mmpretrain/work_dirs/linear_probe_cifar10/epoch_4.pth'
+                                                             
+my_model = mmpretrain.get_model(config_path, pretrained=checkpoint_path)
+    
 model_dict = {                                                                                
         'my_model': my_model,                                                                 
         } 
@@ -73,11 +76,13 @@ class BatchNormalize:
         return (tensor - self.mean) / self.std
 
 # arguments as variables, should probably make an args parser.
-data_file='/path/to/grid_pg_images_3x3_list.txt'                                          
-data_root='/path/to/grid_pg_images_3x3'                                                   
-output_dir = '/path/to/output_dir'; os.makedirs(output_dir, exist_ok = True) 
+data_file='grid_pg_images_3x3_list.txt'                                          
+data_root='grid_pg_images_3x3'                                                   
+output_dir = 'results_lime_3x3'
+os.makedirs(output_dir, exist_ok = True)
+experiment_name = 'cifar10_lime_test'
 batch_size = 1
-n_outputs = 1000 # number of classes
+n_outputs = 10 # number of classes
 cpu = False
 shuffle = False
 cmap = "bwr"
@@ -172,12 +177,12 @@ def main(
             loss_type = 'ce' if '_ce' in model_name else 'bce'
                                                                                           
             inp = data.clone().to(device)                                                 
-            if '_resnet' in model_name:                                                   
-                curr_data = data_norm.clone().to(device)                                  
-                lime_explainer = Lime(model, num_classes=n_outputs, model_type='std', full_map=True, loss_type=loss_type)
-            else:                                                                         
-                curr_data = torch.cat([inp, 1-inp], dim=1)                                
+            if 'bcos' in model_name:
+                curr_data = torch.cat([inp, 1-inp], dim=1)
                 lime_explainer = Lime(model, num_classes=n_outputs, model_type='bcos', full_map=True, loss_type=loss_type)
+            else:
+                curr_data = data_norm.clone().to(device)
+                lime_explainer = Lime(model, num_classes=n_outputs, model_type='std', full_map=True, loss_type=loss_type)
                                                                                           
             for target_idx in range(target.shape[1]):                                     
 

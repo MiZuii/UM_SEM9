@@ -59,8 +59,11 @@ def get_att_maps(image_variable, output, ax, x, y, k=1, model_name='', label=Non
         curr_prod, coloured_exp = get_bcos_attributions(image_variable, w, ax, x, 1, smooth=True)
     return curr_prod, coloured_exp
 
-# define and load the models here                                                             
-my_model = mmpretrain.get_model('/path/to/model_config.py', pretrained='/path/to/pretrained_checkpoint.pth')
+# define and load the models here
+config_path = '../../pretraining/mmpretrain/linear_probe_cifar10.py'
+checkpoint_path = '../../pretraining/mmpretrain/work_dirs/linear_probe_cifar10/epoch_4.pth'
+                                                             
+my_model = mmpretrain.get_model(config_path, pretrained=checkpoint_path)
                                                                                               
 model_dict = {                                                                                
         'my_model': my_model,                                                                 
@@ -119,13 +122,14 @@ class BatchNormalize:
         return (tensor - self.mean) / self.std
 
 # arguments as variables, should probably make an args parser.
-data_file='/path/to/grid_pg_images_3x3_list.txt'
-data_root='/path/to/grid_pg_images_3x3'
-output_dir = '/path/to/output_dir'; os.makedirs(output_dir, exist_ok = True)
+data_file='grid_pg_images_3x3_list.txt'
+data_root='grid_pg_images_3x3'
+output_dir = 'results_gridpg_3x3'
+os.makedirs(output_dir, exist_ok = True)
 attributor_name = ""
 composite_name = ""
 batch_size = 1
-n_outputs = 1000 # number of classes in imagenet, update for your own dataset
+n_outputs = 10 # number of classes in imagenet, update for your own dataset
 cpu = False
 shuffle = False
 with_bias = True
@@ -431,10 +435,10 @@ def main(
             layer_gc = LayerGradCam(model, model.backbone.layer4[-1].conv3)
 
             inp = data.clone().to(device)
-            if '_resnet' in model_name:
-                curr_data = data_norm.clone().to(device)
-            else:
+            if 'bcos' in model_name:
                 curr_data = torch.cat([inp, 1-inp], dim=1)
+            else:
+                curr_data = data_norm.clone().to(device)
 
             for target_idx in range(target.shape[1]):
                 contribution_map = layer_gc.attribute(curr_data, int(target[0, target_idx]))
@@ -464,10 +468,10 @@ def main(
             ixg = InputXGradient(model)                                                   
                                                                                           
             inp = data.clone().to(device)                                                 
-            if '_resnet' in model_name:                                                   
-                curr_data = data_norm.clone().to(device)                                  
-            else:                                                                         
-                curr_data = torch.cat([inp, 1-inp], dim=1)                                
+            if 'bcos' in model_name:
+                curr_data = torch.cat([inp, 1-inp], dim=1)
+            else:
+                curr_data = data_norm.clone().to(device)                                
                                                                                           
             for target_idx in range(target.shape[1]):                                     
                 contribution_map = ixg.attribute(curr_data, target=int(target[0, target_idx]))
@@ -518,10 +522,10 @@ def main(
             gbp = GuidedBackprop(model)                                                   
                                                                                           
             inp = data.clone().to(device)                                                 
-            if '_resnet' in model_name:                                                   
-                curr_data = data_norm.clone().to(device)                                  
-            else:                                                                         
-                curr_data = torch.cat([inp, 1-inp], dim=1)                                
+            if 'bcos' in model_name:
+                curr_data = torch.cat([inp, 1-inp], dim=1)
+            else:
+                curr_data = data_norm.clone().to(device)                                
                                                                                           
             for target_idx in range(target.shape[1]):                                     
                 contribution_map = gbp.attribute(curr_data, target=int(target[0, target_idx]))
