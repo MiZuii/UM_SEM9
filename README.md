@@ -16,10 +16,13 @@ project_root/
 │   ├── gradcam.py        # GradCAM Class
 │   ├── ig.py             # Integrated Gradients Class
 │   └── diet.py           # DiET Optimization Logic
+├── trainers/
+│   ├── __init__.py
+│   ├── baseline_trainer.py   # Baseline models trainer
+│   └── diet_trainer.py       # DiET models trainer
 ├── experiment_single.py  # Variant 1: Single Datapoint Cross-Exam
 ├── experiment_batch.py   # Variant 2: Dataset/Subset Cross-Exam
 ├── pngs/                 # Directory with baseline models training results
-├── baseline_models/trainer.py  # Script for training baseline models
 ├── DiET/                 # Directory for original DiET code
 ├── how-to-probe/         # Directory for original how-to-probe code
 ├── results/              # Directory with output of the experiments

@@ -1,14 +1,14 @@
 import torch
 import torch.nn as nn
 
-def update_mask(mask, x, model, mask_opt, simp_weight, device='cuda'):
+def update_mask(mask, x, model, mask_opt, simp_weight, scale_factor, device='cuda'):
 
     im_size = 224
     mask = mask.requires_grad_(True)
     model.eval()
 
     sm = torch.nn.Softmax(dim=1)
-    ups = torch.nn.Upsample(scale_factor=8, mode='bilinear')
+    ups = torch.nn.Upsample(scale_factor=scale_factor, mode='bilinear')
 
     batch_D_d, y, pred_fb_d = x
 
@@ -41,7 +41,7 @@ def update_mask(mask, x, model, mask_opt, simp_weight, device='cuda'):
 
     return metrics
 
-def distill_singular(mask, model, x, mask_opt):
+def distill_singular(mask, model, x, mask_opt, mask_scale):
 
     num_rounding_steps = 1
     # simp_weight = [1- r*(0.9/num_rounding_steps) for r in range(num_rounding_steps)]
@@ -52,7 +52,7 @@ def distill_singular(mask, model, x, mask_opt):
 
     while (not mask_converged):
 
-        mask_metrics = update_mask(mask, x, model, mask_opt, simp_weight)
+        mask_metrics = update_mask(mask, x, model, mask_opt, simp_weight, mask_scale)
         mask_loss = mask_metrics[0]
         mask_converged = (mask_loss > 0.998*prev_prev_loss) and (mask_loss < 1.002*prev_prev_loss)
         
@@ -72,11 +72,11 @@ class DiET:
         sm = torch.nn.Softmax(dim=1)
         pred_f = sm(self.model(x))
 
-        mask = torch.ones((1, 1, self.im_size//8, self.im_size//8))
+        mask = torch.ones((1, 1, self.im_size//self.mask_scale, self.im_size//self.mask_scale))
         mask = mask.requires_grad_(True)
-        mask_opt = torch.optim.SGD([mask], lr=10)
+        mask_opt = torch.optim.SGD([mask], lr=300)
         mask_opt.zero_grad()
 
-        mask = distill_singular(mask, self.model, (x, y, pred_f), mask_opt)
+        mask = distill_singular(mask, self.model, (x, y, pred_f), mask_opt, self.mask_scale)
         ups = torch.nn.Upsample(scale_factor=self.mask_scale, mode='bilinear')
         return ups(mask)

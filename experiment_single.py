@@ -38,7 +38,7 @@ def save_result(heatmap_tensor, original_image_tensor, save_path):
     Image.fromarray(original_image_resized).save(f"{save_path}_original.png")
 
 def run_single_experiment():
-    MODELS = ['resnet18', 'resnet34', 'resnet50', 'diet']
+    MODELS = ['resnet18', 'resnet34', 'resnet50']
     DATASETS = ['CIFAR10', 'CIFAR100', 'HardMNIST']
     METHODS = ['DiET', 'GradCAM', 'IG']
     
@@ -78,11 +78,39 @@ def run_single_experiment():
                     explainer = IntegratedGradients(model)
                     mask = explainer.explain(d_img)
                 elif method_name == 'DiET':
-                    explainer = DiET(model, device=DEVICE)
+                    explainer = DiET(model, device=DEVICE, mask_scale=32)
                     mask = explainer.explain(d_img, label)
                 
                 # Save
-                save_dir = os.path.join(OUT_DIR, d_name, m_name, method_name)
+                save_dir = os.path.join(OUT_DIR, d_name, m_name, "baseline", method_name)
+                os.makedirs(save_dir, exist_ok=True)
+                save_result(mask, img, os.path.join(save_dir, f"idx_{TARGET_IDX}"))
+
+            print(f"  > DiET version of model: {m_name}")
+
+            # Construct path to weights
+            weights = os.path.join(MODEL_DIR, f"{m_name}_{d_name}_{0}_diet_model.pth")
+            model = get_model(m_name, num_classes, weights, DEVICE)
+
+            if model is None:
+                print(f"Skipping diet version of \"{m_name}\" due to missing weights.")
+                continue
+
+            for method_name in METHODS:
+                print(f"    >> Method: {method_name}")
+                
+                if method_name == 'GradCAM':
+                    explainer = GradCAM(model)
+                    mask = explainer.explain(d_img)
+                elif method_name == 'IG':
+                    explainer = IntegratedGradients(model)
+                    mask = explainer.explain(d_img)
+                elif method_name == 'DiET':
+                    explainer = DiET(model, device=DEVICE, mask_scale=32)
+                    mask = explainer.explain(d_img, label)
+                
+                # Save
+                save_dir = os.path.join(OUT_DIR, d_name, m_name, "diet", method_name)
                 os.makedirs(save_dir, exist_ok=True)
                 save_result(mask, img, os.path.join(save_dir, f"idx_{TARGET_IDX}"))
 
