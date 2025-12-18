@@ -8,8 +8,7 @@
 .idea/
 .venv
 
-# dedicated
+# data
 DiET/data
-pngs
 data
 

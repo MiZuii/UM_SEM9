@@ -8,6 +8,8 @@ from PIL import Image
 import glob
 import time
 import random
+import os
+import sys
 
 
 def construct_data(path, out_path):
@@ -67,6 +69,10 @@ def construct_data(path, out_path):
 
 def main():
 
+    for i in range(10):
+        os.makedirs(f'data/hard_mnist/training/{i}')
+        os.makedirs(f'data/hard_mnist/testing/{i}')
+    
     construct_data("data/colorized-MNIST/training/*/*", "data/hard_mnist/training")
     construct_data("data/colorized-MNIST/testing/*/*", "data/hard_mnist/testing")
     print("constructed hard MNIST dataset")
