@@ -170,14 +170,24 @@ def train_dino(args):
         args
     )
     
+    # Custom ImageFolder that excludes hidden directories (like .cache)
+    class FilteredImageFolder(datasets.ImageFolder):
+        def find_classes(self, directory):
+            classes = sorted(entry.name for entry in os.scandir(directory) 
+                           if entry.is_dir() and not entry.name.startswith('.'))
+            if not classes:
+                raise FileNotFoundError(f"Couldn't find any class folder in {directory}.")
+            class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
+            return classes, class_to_idx
+    
     # Load dataset based on --dataset argument
     if args.dataset == 'cifar10':
         # CIFAR10 in ImageFolder format (use download_cifar10.py to prepare)
-        dataset = datasets.ImageFolder(args.data_path, transform=transform)
+        dataset = FilteredImageFolder(args.data_path, transform=transform)
         print(f"Using CIFAR10 dataset from: {args.data_path}")
     else:
         # ImageNet or other ImageFolder datasets
-        dataset = datasets.ImageFolder(args.data_path, transform=transform)
+        dataset = FilteredImageFolder(args.data_path, transform=transform)
     
     sampler = torch.utils.data.DistributedSampler(dataset, shuffle=True)
     data_loader = torch.utils.data.DataLoader(
