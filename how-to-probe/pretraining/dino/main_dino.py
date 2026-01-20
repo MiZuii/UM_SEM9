@@ -121,6 +121,9 @@ def get_args_parser():
     # Misc
     parser.add_argument('--data_path', default='/path/to/imagenet/train/', type=str,
         help='Please specify path to the ImageNet training data.')
+    parser.add_argument('--dataset', default='imagenet', type=str,
+        choices=['imagenet', 'cifar10'],
+        help='Dataset to use for training. Use "cifar10" for CIFAR10 in ImageFolder format.')
     parser.add_argument('--output_dir', default=".", type=str, help='Path to save logs and checkpoints.')
     parser.add_argument('--saveckp_freq', default=10, type=int, help='Save checkpoint every x epochs.')
     parser.add_argument('--seed', default=0, type=int, help='Random seed.')
@@ -166,7 +169,16 @@ def train_dino(args):
         args.local_crops_number,
         args
     )
-    dataset = datasets.ImageFolder(args.data_path, transform=transform)
+    
+    # Load dataset based on --dataset argument
+    if args.dataset == 'cifar10':
+        # CIFAR10 in ImageFolder format (use download_cifar10.py to prepare)
+        dataset = datasets.ImageFolder(args.data_path, transform=transform)
+        print(f"Using CIFAR10 dataset from: {args.data_path}")
+    else:
+        # ImageNet or other ImageFolder datasets
+        dataset = datasets.ImageFolder(args.data_path, transform=transform)
+    
     sampler = torch.utils.data.DistributedSampler(dataset, shuffle=True)
     data_loader = torch.utils.data.DataLoader(
         dataset,
