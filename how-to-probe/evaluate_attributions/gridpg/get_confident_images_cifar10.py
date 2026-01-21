@@ -79,16 +79,53 @@ def main():
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
 
-    # Load model
+    # Build model manually to avoid config compatibility issues
+    from mmpretrain.models import ResNet_CIFAR
+    from mmpretrain.models.heads import LinearClsHead as MMLinearClsHead
+    
+    # Load checkpoint to get state dict
     model_info = MODEL_CONFIGS[args.model]
     print(f"Loading model: {args.model}")
-    print(f"  Config: {model_info['config']}")
     print(f"  Checkpoint: {model_info['checkpoint']}")
     
-    model = get_model(model_info['config'], pretrained=model_info['checkpoint'])
+    checkpoint = torch.load(model_info['checkpoint'], map_location='cpu')
+    state_dict = checkpoint.get('state_dict', checkpoint)
+    
+    # Build backbone
+    backbone = ResNet_CIFAR(depth=50, num_stages=4, out_indices=(3,), style='pytorch')
+    
+    # Build a simple classifier with the backbone
+    class SimpleClassifier(nn.Module):
+        def __init__(self, backbone, num_classes=10, in_channels=2048):
+            super().__init__()
+            self.backbone = backbone
+            self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+            self.fc = nn.Linear(in_channels, num_classes)
+        
+        def forward(self, x):
+            x = self.backbone(x)
+            if isinstance(x, (list, tuple)):
+                x = x[-1]
+            x = self.avgpool(x)
+            x = x.view(x.size(0), -1)
+            x = self.fc(x)
+            return x
+    
+    model = SimpleClassifier(backbone, num_classes=10, in_channels=2048)
+    
+    # Load weights - map from checkpoint keys to our model keys
+    new_state_dict = {}
+    for key, value in state_dict.items():
+        if key.startswith('backbone.'):
+            new_state_dict[key] = value
+        elif key.startswith('head.fc.'):
+            # Map head.fc.weight -> fc.weight
+            new_key = key.replace('head.fc.', 'fc.')
+            new_state_dict[new_key] = value
+    
+    model.load_state_dict(new_state_dict, strict=False)
     model.to(device)
     model.eval()
-    model.data_preprocessor = None  # Disable built-in preprocessing
     
     for param in model.parameters():
         param.requires_grad = False
