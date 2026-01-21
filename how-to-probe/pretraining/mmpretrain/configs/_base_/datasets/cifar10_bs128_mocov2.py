@@ -56,7 +56,8 @@ train_dataloader = dict(
     num_workers=4,
     persistent_workers=True,
     pin_memory=True,
-    sampler=dict(type='DefaultSampler', shuffle=True, drop_last=True),
+    drop_last=True,  # Required for MoCo: queue_len must be divisible by batch_size
+    sampler=dict(type='DefaultSampler', shuffle=True),
     collate_fn=dict(type='default_collate'),
     dataset=dict(
         type=dataset_type,
