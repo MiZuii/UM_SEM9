@@ -160,13 +160,53 @@ def main():
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
 
-    # Load model
+    # Build model manually to avoid config compatibility issues
+    from mmpretrain.models import ResNet_CIFAR
+    
+    # Load checkpoint
     model_info = MODEL_CONFIGS[args.model]
     print(f"Loading model: {args.model}")
-    model = get_model(model_info['config'], pretrained=model_info['checkpoint'])
+    print(f"  Checkpoint: {model_info['checkpoint']}")
+    
+    checkpoint = torch.load(model_info['checkpoint'], map_location='cpu')
+    state_dict = checkpoint.get('state_dict', checkpoint)
+    
+    # Build backbone
+    backbone = ResNet_CIFAR(depth=50, num_stages=4, out_indices=(3,), style='pytorch')
+    
+    # Build classifier with proper structure for attribution methods
+    class SimpleClassifier(nn.Module):
+        def __init__(self, backbone, num_classes=10, in_channels=2048):
+            super().__init__()
+            self.backbone = backbone
+            self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+            self.fc = nn.Linear(in_channels, num_classes)
+        
+        def forward(self, x):
+            x = self.backbone(x)
+            if isinstance(x, (list, tuple)):
+                x = x[-1]
+            x = self.avgpool(x)
+            x = x.view(x.size(0), -1)
+            x = self.fc(x)
+            return x
+    
+    model = SimpleClassifier(backbone, num_classes=10, in_channels=2048)
+    
+    # Load weights
+    new_state_dict = {}
+    for key, value in state_dict.items():
+        if key.startswith('backbone.'):
+            new_state_dict[key] = value
+        elif key.startswith('head.fc.'):
+            new_key = key.replace('head.fc.', 'fc.')
+            if value.dim() == 4:  # Conv2d weight [out, in, 1, 1] -> Linear [out, in]
+                value = value.squeeze(-1).squeeze(-1)
+            new_state_dict[new_key] = value
+    
+    model.load_state_dict(new_state_dict, strict=False)
     model.to(device)
     model.eval()
-    model.data_preprocessor = None
     
     for param in model.parameters():
         param.requires_grad = False
