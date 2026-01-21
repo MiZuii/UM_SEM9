@@ -70,7 +70,7 @@ model = dict(
         init_cfg=dict(
             type='Pretrained',
             prefix='backbone.',
-            checkpoint='outputs/byol_cifar10/epoch_50.pth'
+            checkpoint='../../outputs/byol_cifar10/epoch_50.pth'
         )
     ),
     neck=None,

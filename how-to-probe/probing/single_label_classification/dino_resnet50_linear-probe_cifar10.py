@@ -72,7 +72,7 @@ model = dict(
         init_cfg=dict(
             type='Pretrained',
             prefix='teacher.',  # DINO uses teacher weights
-            checkpoint='outputs/dino_cifar10/checkpoint.pth'
+            checkpoint='../../outputs/dino_cifar10/checkpoint.pth'
         )
     ),
     neck=None,
