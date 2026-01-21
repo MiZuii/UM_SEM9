@@ -71,8 +71,8 @@ model = dict(
         style='pytorch',
         init_cfg=dict(
             type='Pretrained',
-            prefix='teacher.',  # DINO uses teacher weights
-            checkpoint='../../outputs/dino_cifar10/checkpoint.pth'
+            prefix='backbone.',  # Converted checkpoint uses 'backbone.' prefix
+            checkpoint='../../outputs/dino_cifar10/checkpoint_converted.pth'
         )
     ),
     neck=None,
