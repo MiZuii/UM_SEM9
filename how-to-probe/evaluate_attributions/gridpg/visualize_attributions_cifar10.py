@@ -141,7 +141,7 @@ def create_comparison_figure(models_data, sample_images, sample_labels, output_p
     
     Layout:
     Rows: Different input images
-    Columns: Input | Model1-GradCAM | Model1-IxG | Model2-GradCAM | Model2-IxG | ...
+    Columns: Class Label | Input | Model1-GradCAM | Model1-IxG | ... | Colorbar
     """
     n_samples = len(sample_images)
     n_models = len(models_data)
@@ -150,19 +150,29 @@ def create_comparison_figure(models_data, sample_images, sample_labels, output_p
     
     n_cols = 1 + n_models * n_methods  # Input + (models × methods)
     
-    fig, axes = plt.subplots(n_samples, n_cols, figsize=(n_cols * 1.5, n_samples * 1.5))
+    # Create figure with extra space for labels and colorbar
+    fig, axes = plt.subplots(n_samples, n_cols, figsize=(n_cols * 1.8 + 1.5, n_samples * 1.8))
     if n_samples == 1:
         axes = axes[np.newaxis, :]
     
+    # Adjust subplot positions to make room for labels on left and colorbar on right
+    plt.subplots_adjust(left=0.12, right=0.88, wspace=0.05, hspace=0.15)
+    
     # Create colormap (blue-white-red)
     cmap = plt.cm.bwr
+    im = None  # Will hold the last imshow for colorbar
     
     for row, (img, label) in enumerate(zip(sample_images, sample_labels)):
+        # Add class label on the very left (as text annotation)
+        class_name = CIFAR10_CLASSES[label].capitalize()
+        axes[row, 0].annotate(class_name, xy=(-0.3, 0.5), xycoords='axes fraction',
+                              fontsize=11, fontweight='bold', ha='right', va='center',
+                              color='#333333')
+        
         # Input image
         axes[row, 0].imshow(img.permute(1, 2, 0).numpy())
-        axes[row, 0].set_title('Input' if row == 0 else '', fontsize=10)
+        axes[row, 0].set_title('Input' if row == 0 else '', fontsize=11, fontweight='bold')
         axes[row, 0].axis('off')
-        axes[row, 0].set_ylabel(CIFAR10_CLASSES[label], fontsize=9, rotation=0, labelpad=35, va='center')
         
         # Attribution maps for each model
         col = 1
@@ -170,13 +180,19 @@ def create_comparison_figure(models_data, sample_images, sample_labels, output_p
             attrs = attrs_list[row]
             for method in attr_methods:
                 attr_map = normalize_attr_map(attrs[method])
-                axes[row, col].imshow(attr_map, cmap=cmap, vmin=-1, vmax=1)
+                im = axes[row, col].imshow(attr_map, cmap=cmap, vmin=-1, vmax=1)
                 if row == 0:
-                    axes[row, col].set_title(f'{MODEL_CONFIGS[model_name]["name"]}\n{method}', fontsize=8)
+                    axes[row, col].set_title(f'{MODEL_CONFIGS[model_name]["name"]}\n{method}', fontsize=9)
                 axes[row, col].axis('off')
                 col += 1
     
-    plt.tight_layout()
+    # Add colorbar on the far right
+    if im is not None:
+        cbar_ax = fig.add_axes([0.91, 0.15, 0.02, 0.7])
+        cbar = fig.colorbar(im, cax=cbar_ax)
+        cbar.set_label('Attribution', fontsize=10)
+        cbar.ax.tick_params(labelsize=8)
+    
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     print(f"Saved comparison figure to {output_path}")
@@ -188,18 +204,27 @@ def create_single_model_figure(model_name, model, sample_images, sample_labels, 
     attr_methods = ['GradCAM', 'Input×Grad', 'GuidedBP']
     n_methods = len(attr_methods)
     
-    fig, axes = plt.subplots(n_samples, 1 + n_methods, figsize=((1 + n_methods) * 2, n_samples * 2))
+    # Create figure with extra space for labels and colorbar
+    fig, axes = plt.subplots(n_samples, 1 + n_methods, figsize=((1 + n_methods) * 2.2 + 1, n_samples * 2))
     if n_samples == 1:
         axes = axes[np.newaxis, :]
+    
+    # Adjust subplot positions
+    plt.subplots_adjust(left=0.15, right=0.85, wspace=0.08, hspace=0.15)
     
     cmap = plt.cm.bwr
     
     for row, (img, label) in enumerate(zip(sample_images, sample_labels)):
+        # Add class label on the very left
+        class_name = CIFAR10_CLASSES[label].capitalize()
+        axes[row, 0].annotate(class_name, xy=(-0.35, 0.5), xycoords='axes fraction',
+                              fontsize=12, fontweight='bold', ha='right', va='center',
+                              color='#333333')
+        
         # Input image
         axes[row, 0].imshow(img.permute(1, 2, 0).numpy())
-        axes[row, 0].set_title('Input' if row == 0 else '', fontsize=12)
+        axes[row, 0].set_title('Input' if row == 0 else '', fontsize=12, fontweight='bold')
         axes[row, 0].axis('off')
-        axes[row, 0].set_ylabel(f'{CIFAR10_CLASSES[label]}', fontsize=10, rotation=0, labelpad=40, va='center')
         
         # Get attributions
         data_norm = norm_fn(img.unsqueeze(0).to(device))
@@ -210,15 +235,16 @@ def create_single_model_figure(model_name, model, sample_images, sample_labels, 
             attr_map = normalize_attr_map(attrs[method])
             im = axes[row, col + 1].imshow(attr_map, cmap=cmap, vmin=-1, vmax=1)
             if row == 0:
-                axes[row, col + 1].set_title(method, fontsize=12)
+                axes[row, col + 1].set_title(method, fontsize=12, fontweight='bold')
             axes[row, col + 1].axis('off')
     
-    # Add colorbar
-    cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
-    fig.colorbar(im, cax=cbar_ax, label='Attribution')
+    # Add colorbar on the far right
+    cbar_ax = fig.add_axes([0.90, 0.15, 0.025, 0.7])
+    cbar = fig.colorbar(im, cax=cbar_ax)
+    cbar.set_label('Attribution', fontsize=11)
+    cbar.ax.tick_params(labelsize=9)
     
-    plt.suptitle(f'{MODEL_CONFIGS[model_name]["name"]} Attribution Maps', fontsize=14, y=1.02)
-    plt.tight_layout()
+    plt.suptitle(f'{MODEL_CONFIGS[model_name]["name"]} Attribution Maps', fontsize=14, fontweight='bold', y=0.98)
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     print(f"Saved {model_name} figure to {output_path}")
