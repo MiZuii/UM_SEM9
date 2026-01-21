@@ -55,7 +55,8 @@ train_dataloader = dict(
     batch_size=128,
     num_workers=4,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
+    pin_memory=True,
+    sampler=dict(type='DefaultSampler', shuffle=True, drop_last=True),
     collate_fn=dict(type='default_collate'),
     dataset=dict(
         type=dataset_type,
