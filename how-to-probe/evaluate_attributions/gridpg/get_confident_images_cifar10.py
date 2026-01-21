@@ -119,8 +119,10 @@ def main():
         if key.startswith('backbone.'):
             new_state_dict[key] = value
         elif key.startswith('head.fc.'):
-            # Map head.fc.weight -> fc.weight
+            # Map head.fc.weight -> fc.weight and squeeze Conv2d weights to Linear
             new_key = key.replace('head.fc.', 'fc.')
+            if value.dim() == 4:  # Conv2d weight [out, in, 1, 1] -> Linear [out, in]
+                value = value.squeeze(-1).squeeze(-1)
             new_state_dict[new_key] = value
     
     model.load_state_dict(new_state_dict, strict=False)
