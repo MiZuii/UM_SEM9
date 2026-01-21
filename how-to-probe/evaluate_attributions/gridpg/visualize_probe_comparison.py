@@ -236,8 +236,8 @@ def main():
     parser = argparse.ArgumentParser(description='Generate probe comparison figure')
     parser.add_argument('--num_samples', type=int, default=6, help='Number of samples (classes)')
     parser.add_argument('--checkpoint', type=str, 
-                        default='../../outputs/probing_dino_cifar10/epoch_100.pth',
-                        help='Path to DINO linear probe checkpoint')
+                        default='../../outputs/probing_byol_cifar10/epoch_100.pth',
+                        help='Path to BYOL linear probe checkpoint')
     parser.add_argument('--data_root', type=str, default='../../data/cifar10')
     parser.add_argument('--output_dir', type=str, default='attribution_figures')
     parser.add_argument('--seed', type=int, default=42)
