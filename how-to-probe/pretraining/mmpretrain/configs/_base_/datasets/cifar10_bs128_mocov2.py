@@ -43,7 +43,7 @@ view_pipeline = [
 ]
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    # Note: No LoadImageFromFile needed - CIFAR10 provides images directly in memory
     dict(
         type='MultiView',
         num_views=[1, 1],
