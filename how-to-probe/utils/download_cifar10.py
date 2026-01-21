@@ -37,10 +37,11 @@ def download_and_convert_cifar10(output_dir: str, include_test: bool = False):
     for class_name in CIFAR10_CLASSES:
         (train_path / class_name).mkdir(parents=True, exist_ok=True)
     
-    # Download CIFAR10 train set
+    # Download CIFAR10 train set (cache stored in parent to avoid ImageFolder issues)
+    cache_dir = output_path.parent / '.cifar10_cache'
     print("Downloading CIFAR10 training set...")
     train_dataset = datasets.CIFAR10(
-        root=str(output_path / '.cache'),
+        root=str(cache_dir),
         train=True,
         download=True
     )
@@ -67,7 +68,7 @@ def download_and_convert_cifar10(output_dir: str, include_test: bool = False):
         # Download CIFAR10 test set
         print("Downloading CIFAR10 test set...")
         test_dataset = datasets.CIFAR10(
-            root=str(output_path / '.cache'),
+            root=str(cache_dir),
             train=False,
             download=True
         )
