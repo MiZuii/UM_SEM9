@@ -151,7 +151,7 @@ def main():
     if args.data_root is None:
         args.data_root = f'grid_pg_images_{args.grid_size}x{args.grid_size}_cifar10_{args.model}'
     if args.data_file is None:
-        args.data_file = f'grid_pg_images_{args.grid_size}x{args.grid_size}_list.txt'
+        args.data_file = f'grid_pg_images_{args.grid_size}x{args.grid_size}_cifar10_{args.model}_list.txt'
     if args.output_dir is None:
         args.output_dir = f'output_gridpg_cifar10_{args.model}_{args.grid_size}x{args.grid_size}'
     

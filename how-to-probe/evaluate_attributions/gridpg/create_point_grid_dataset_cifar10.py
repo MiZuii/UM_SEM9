@@ -88,7 +88,8 @@ def main():
             grid_img.save(os.path.join(args.output_dir_2x2, fname))
 
     # Create file list for 2x2
-    with open(os.path.join(args.output_dir_2x2, '..', 'grid_pg_images_2x2_list.txt'), 'w') as f:
+    list_file_2x2 = args.output_dir_2x2 + '_list.txt'
+    with open(list_file_2x2, 'w') as f:
         for fname in sorted(os.listdir(args.output_dir_2x2)):
             if fname.endswith('.png'):
                 f.write(fname + '\n')
@@ -118,7 +119,8 @@ def main():
             grid_img.save(os.path.join(args.output_dir_3x3, fname))
 
     # Create file list for 3x3
-    with open(os.path.join(args.output_dir_3x3, '..', 'grid_pg_images_3x3_list.txt'), 'w') as f:
+    list_file_3x3 = args.output_dir_3x3 + '_list.txt'
+    with open(list_file_3x3, 'w') as f:
         for fname in sorted(os.listdir(args.output_dir_3x3)):
             if fname.endswith('.png'):
                 f.write(fname + '\n')
