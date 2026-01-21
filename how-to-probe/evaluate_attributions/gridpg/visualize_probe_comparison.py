@@ -225,7 +225,7 @@ def create_probe_comparison_figure(linear_model, mlp_model, sample_images, sampl
     # Add figure title
     plt.suptitle('MLP Probes vs Linear Probes: CIFAR10 Attribution Comparison\n'
                  '(Dotted boxes show attended regions)', 
-                 fontsize=14, fontweight='bold', y=0.98)
+                 fontsize=14, fontweight='bold', y=1.05)
     
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
