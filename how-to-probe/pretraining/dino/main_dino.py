@@ -122,8 +122,8 @@ def get_args_parser():
     parser.add_argument('--data_path', default='/path/to/imagenet/train/', type=str,
         help='Please specify path to the ImageNet training data.')
     parser.add_argument('--dataset', default='imagenet', type=str,
-        choices=['imagenet', 'cifar10'],
-        help='Dataset to use for training. Use "cifar10" for CIFAR10 in ImageFolder format.')
+        choices=['imagenet', 'cifar10', 'cifar100'],
+        help='Dataset to use for training. Use "cifar10" or "cifar100" for CIFAR datasets in ImageFolder format.')
     parser.add_argument('--output_dir', default=".", type=str, help='Path to save logs and checkpoints.')
     parser.add_argument('--saveckp_freq', default=10, type=int, help='Save checkpoint every x epochs.')
     parser.add_argument('--seed', default=0, type=int, help='Random seed.')
@@ -185,6 +185,10 @@ def train_dino(args):
         # CIFAR10 in ImageFolder format (use download_cifar10.py to prepare)
         dataset = FilteredImageFolder(args.data_path, transform=transform)
         print(f"Using CIFAR10 dataset from: {args.data_path}")
+    elif args.dataset == 'cifar100':
+        # CIFAR100 in ImageFolder format (use download_cifar100.py to prepare)
+        dataset = FilteredImageFolder(args.data_path, transform=transform)
+        print(f"Using CIFAR100 dataset from: {args.data_path}")
     else:
         # ImageNet or other ImageFolder datasets
         dataset = FilteredImageFolder(args.data_path, transform=transform)
