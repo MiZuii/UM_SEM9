@@ -1,0 +1,119 @@
+{
+  "CIFAR10": {
+    "resnet18": {
+      "baseline": {
+        "correct_confident": 328,
+        "incorrect_confident": 2405,
+        "uncertain": 8420,
+        "arbitrary": 1450
+      },
+      "diet": {
+        "correct_confident": 1,
+        "incorrect_confident": 925,
+        "uncertain": 1167,
+        "arbitrary": 1450
+      }
+    },
+    "resnet34": {
+      "baseline": {
+        "correct_confident": 251,
+        "incorrect_confident": 9260,
+        "uncertain": 6894,
+        "arbitrary": 1450
+      },
+      "diet": {
+        "correct_confident": 0,
+        "incorrect_confident": 275,
+        "uncertain": 7174,
+        "arbitrary": 1450
+      }
+    },
+    "resnet50": {
+      "baseline": {
+        "correct_confident": 2646,
+        "incorrect_confident": 4870,
+        "uncertain": 1558,
+        "arbitrary": 1450
+      },
+      "diet": null
+    }
+  },
+  "CIFAR100": {
+    "resnet18": {
+      "baseline": {
+        "correct_confident": 8756,
+        "incorrect_confident": 6927,
+        "uncertain": 3656,
+        "arbitrary": 1450
+      },
+      "diet": {
+        "correct_confident": 26,
+        "incorrect_confident": 7657,
+        "uncertain": 6349,
+        "arbitrary": 1450
+      }
+    },
+    "resnet34": {
+      "baseline": {
+        "correct_confident": 3063,
+        "incorrect_confident": 8951,
+        "uncertain": 5587,
+        "arbitrary": 1450
+      },
+      "diet": {
+        "correct_confident": 4,
+        "incorrect_confident": 8,
+        "uncertain": 3850,
+        "arbitrary": 1450
+      }
+    },
+    "resnet50": {
+      "baseline": {
+        "correct_confident": 1000,
+        "incorrect_confident": 8572,
+        "uncertain": 926,
+        "arbitrary": 1450
+      },
+      "diet": null
+    }
+  },
+  "HardMNIST": {
+    "resnet18": {
+      "baseline": {
+        "correct_confident": 2907,
+        "incorrect_confident": 699,
+        "uncertain": 106,
+        "arbitrary": 1450
+      },
+      "diet": {
+        "correct_confident": 2241,
+        "incorrect_confident": 699,
+        "uncertain": 1080,
+        "arbitrary": 1450
+      }
+    },
+    "resnet34": {
+      "baseline": {
+        "correct_confident": 891,
+        "incorrect_confident": 3200,
+        "uncertain": 1753,
+        "arbitrary": 1450
+      },
+      "diet": {
+        "correct_confident": 0,
+        "incorrect_confident": 1425,
+        "uncertain": 2102,
+        "arbitrary": 1450
+      }
+    },
+    "resnet50": {
+      "baseline": {
+        "correct_confident": 3743,
+        "incorrect_confident": 3417,
+        "uncertain": 779,
+        "arbitrary": 1450
+      },
+      "diet": null
+    }
+  }
+}
