@@ -180,7 +180,6 @@ how-to-probe/
 │   │   ├── eval_gridpg_*.py
 │   │   └── visualize_*.py
 │   └── epg/                        # Energy Pointing Game
-└── report/                         # LaTeX report files
 ```
 
 ---
