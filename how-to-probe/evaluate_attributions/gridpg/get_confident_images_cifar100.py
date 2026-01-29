@@ -191,6 +191,13 @@ def main():
 
     print(f"\nDone! Saved {sample_index} confident images to {args.output_dir}")
     print(f"Classes with samples: {sum(1 for c in class_counts.values() if c > 0)}/100")
+    print("\nPer-class distribution:")
+    for i, count in class_counts.items():
+        if count > 0:  # Only print classes with samples
+            print(f"  {CIFAR100_CLASSES[i]}: {count}")
+    
+    # Print total
+    print(f"\nTotal confident images: {sum(class_counts.values())}")
 
 
 if __name__ == '__main__':
