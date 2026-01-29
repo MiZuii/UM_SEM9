@@ -1,0 +1,31 @@
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+Using device: cuda:0
+Loading model: mocov2
+  Checkpoint: ../../outputs/probing_mocov2_cifar10/epoch_100.pth
+Files already downloaded and verified
+
+Filtering images with confidence >= 0.95
+Max per class: 100
+Processed 1000/10000 images, saved 65 confident images
+Processed 2000/10000 images, saved 125 confident images
+Processed 3000/10000 images, saved 199 confident images
+Processed 4000/10000 images, saved 271 confident images
+Processed 5000/10000 images, saved 343 confident images
+Processed 6000/10000 images, saved 403 confident images
+Processed 7000/10000 images, saved 461 confident images
+Processed 8000/10000 images, saved 534 confident images
+Processed 9000/10000 images, saved 570 confident images
+
+Done! Saved 600 confident images to confident_images_cifar10_mocov2
+Per-class distribution:
+  airplane: 86
+  automobile: 100
+  bird: 22
+  cat: 1
+  deer: 11
+  dog: 15
+  frog: 100
+  horse: 100
+  ship: 100
+  truck: 65
