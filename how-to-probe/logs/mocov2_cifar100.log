@@ -1,0 +1,470 @@
+nohup: ignoring input
+=============================================
+MoCo v2 Training on CIFAR100
+=============================================
+Config: /home/hkoc/UM/UM_SEM9/how-to-probe/pretraining/mmpretrain/configs/mocov2/mocov2_resnet50_2xb128-coslr-50e_cifar100.py
+Work Directory: /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100
+=============================================
+Detected 2 GPU(s)
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmengine/utils/dl_utils/setup_env.py:56: UserWarning: Setting MKL_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  warnings.warn(
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmengine/utils/dl_utils/setup_env.py:56: UserWarning: Setting MKL_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  warnings.warn(
+01/22 21:58:58 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: linux
+    Python: 3.11.2 (main, Apr 28 2025, 14:11:48) [GCC 12.2.0]
+    CUDA available: True
+    numpy_random_seed: 502103970
+    GPU 0,1: NVIDIA RTX A4000
+    CUDA_HOME: /usr/local/cuda
+    NVCC: Cuda compilation tools, release 13.1, V13.1.80
+    GCC: x86_64-linux-gnu-gcc (Debian 12.2.0-14+deb12u1) 12.2.0
+    PyTorch: 2.0.1+cu117
+    PyTorch compiling details: PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2022.2-Product Build 20220804 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.7.3 (Git Hash 6dbeffbae1f23cbbeae17adb7b5b13f1f37c080e)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.7
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86
+  - CuDNN 8.5
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.7, CUDNN_VERSION=8.5.0, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=0 -fabi-version=11 -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wunused-local-typedefs -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_DISABLE_GPU_ASSERTS=ON, TORCH_VERSION=2.0.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=1, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+    TorchVision: 0.15.2+cu117
+    OpenCV: 4.8.0
+    MMEngine: 0.8.4
+
+Runtime environment:
+    cudnn_benchmark: False
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 0}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 502103970
+    deterministic: False
+    Distributed launcher: pytorch
+    Distributed training: True
+    GPU number: 2
+------------------------------------------------------------
+
+01/22 21:58:58 - mmengine - INFO - Config:
+auto_scale_lr = dict(base_batch_size=256)
+data_preprocessor = dict(
+    mean=[
+        129.304,
+        124.07,
+        112.434,
+    ],
+    std=[
+        68.17,
+        65.392,
+        70.418,
+    ],
+    to_rgb=False,
+    type='SelfSupDataPreprocessor')
+data_root = 'data/cifar100'
+dataset_type = 'CIFAR100'
+default_hooks = dict(
+    checkpoint=dict(interval=1, max_keep_ckpts=3, type='CheckpointHook'),
+    logger=dict(interval=100, type='LoggerHook'),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    timer=dict(type='IterTimerHook'),
+    visualization=dict(enable=False, type='VisualizationHook'))
+default_scope = 'mmpretrain'
+env_cfg = dict(
+    cudnn_benchmark=False,
+    dist_cfg=dict(backend='nccl'),
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
+launcher = 'pytorch'
+load_from = None
+log_level = 'INFO'
+model = dict(
+    backbone=dict(
+        depth=50,
+        num_stages=4,
+        out_indices=(3, ),
+        style='pytorch',
+        type='ResNet_CIFAR'),
+    feat_dim=128,
+    head=dict(
+        loss=dict(type='CrossEntropyLoss'),
+        temperature=0.2,
+        type='ContrastiveHead'),
+    momentum=0.001,
+    neck=dict(
+        hid_channels=2048,
+        in_channels=2048,
+        out_channels=128,
+        type='MoCoV2Neck',
+        with_avg_pool=True),
+    queue_len=4096,
+    type='MoCo')
+optim_wrapper = dict(
+    optimizer=dict(lr=0.03, momentum=0.9, type='SGD', weight_decay=0.0001),
+    type='OptimWrapper')
+param_scheduler = [
+    dict(
+        begin=0,
+        by_epoch=True,
+        convert_to_iter_based=True,
+        end=5,
+        start_factor=0.0001,
+        type='LinearLR'),
+    dict(T_max=45, begin=5, by_epoch=True, end=50, type='CosineAnnealingLR'),
+]
+randomness = dict(deterministic=False, seed=None)
+resume = True
+train_cfg = dict(max_epochs=50, type='EpochBasedTrainLoop')
+train_dataloader = dict(
+    batch_size=128,
+    collate_fn=dict(type='default_collate'),
+    dataset=dict(
+        data_root='data/cifar100',
+        pipeline=[
+            dict(
+                num_views=[
+                    1,
+                    1,
+                ],
+                transforms=[
+                    [
+                        dict(
+                            backend='pillow',
+                            crop_ratio_range=(
+                                0.2,
+                                1.0,
+                            ),
+                            interpolation='bicubic',
+                            scale=32,
+                            type='RandomResizedCrop'),
+                        dict(prob=0.5, type='RandomFlip'),
+                        dict(
+                            prob=0.8,
+                            transforms=[
+                                dict(
+                                    brightness=0.4,
+                                    contrast=0.4,
+                                    hue=0.1,
+                                    saturation=0.4,
+                                    type='ColorJitter'),
+                            ],
+                            type='RandomApply'),
+                        dict(
+                            channel_weights=(
+                                0.114,
+                                0.587,
+                                0.2989,
+                            ),
+                            keep_channels=True,
+                            prob=0.2,
+                            type='RandomGrayscale'),
+                        dict(
+                            magnitude_range=(
+                                0.1,
+                                2.0,
+                            ),
+                            magnitude_std='inf',
+                            prob=0.5,
+                            type='GaussianBlur'),
+                    ],
+                    [
+                        dict(
+                            backend='pillow',
+                            crop_ratio_range=(
+                                0.2,
+                                1.0,
+                            ),
+                            interpolation='bicubic',
+                            scale=32,
+                            type='RandomResizedCrop'),
+                        dict(prob=0.5, type='RandomFlip'),
+                        dict(
+                            prob=0.8,
+                            transforms=[
+                                dict(
+                                    brightness=0.4,
+                                    contrast=0.4,
+                                    hue=0.1,
+                                    saturation=0.4,
+                                    type='ColorJitter'),
+                            ],
+                            type='RandomApply'),
+                        dict(
+                            channel_weights=(
+                                0.114,
+                                0.587,
+                                0.2989,
+                            ),
+                            keep_channels=True,
+                            prob=0.2,
+                            type='RandomGrayscale'),
+                        dict(
+                            magnitude_range=(
+                                0.1,
+                                2.0,
+                            ),
+                            magnitude_std='inf',
+                            prob=0.5,
+                            type='GaussianBlur'),
+                    ],
+                ],
+                type='MultiView'),
+            dict(type='PackInputs'),
+        ],
+        split='train',
+        type='CIFAR100'),
+    drop_last=True,
+    num_workers=4,
+    persistent_workers=True,
+    pin_memory=True,
+    sampler=dict(shuffle=True, type='DefaultSampler'))
+train_pipeline = [
+    dict(
+        num_views=[
+            1,
+            1,
+        ],
+        transforms=[
+            [
+                dict(
+                    backend='pillow',
+                    crop_ratio_range=(
+                        0.2,
+                        1.0,
+                    ),
+                    interpolation='bicubic',
+                    scale=32,
+                    type='RandomResizedCrop'),
+                dict(prob=0.5, type='RandomFlip'),
+                dict(
+                    prob=0.8,
+                    transforms=[
+                        dict(
+                            brightness=0.4,
+                            contrast=0.4,
+                            hue=0.1,
+                            saturation=0.4,
+                            type='ColorJitter'),
+                    ],
+                    type='RandomApply'),
+                dict(
+                    channel_weights=(
+                        0.114,
+                        0.587,
+                        0.2989,
+                    ),
+                    keep_channels=True,
+                    prob=0.2,
+                    type='RandomGrayscale'),
+                dict(
+                    magnitude_range=(
+                        0.1,
+                        2.0,
+                    ),
+                    magnitude_std='inf',
+                    prob=0.5,
+                    type='GaussianBlur'),
+            ],
+            [
+                dict(
+                    backend='pillow',
+                    crop_ratio_range=(
+                        0.2,
+                        1.0,
+                    ),
+                    interpolation='bicubic',
+                    scale=32,
+                    type='RandomResizedCrop'),
+                dict(prob=0.5, type='RandomFlip'),
+                dict(
+                    prob=0.8,
+                    transforms=[
+                        dict(
+                            brightness=0.4,
+                            contrast=0.4,
+                            hue=0.1,
+                            saturation=0.4,
+                            type='ColorJitter'),
+                    ],
+                    type='RandomApply'),
+                dict(
+                    channel_weights=(
+                        0.114,
+                        0.587,
+                        0.2989,
+                    ),
+                    keep_channels=True,
+                    prob=0.2,
+                    type='RandomGrayscale'),
+                dict(
+                    magnitude_range=(
+                        0.1,
+                        2.0,
+                    ),
+                    magnitude_std='inf',
+                    prob=0.5,
+                    type='GaussianBlur'),
+            ],
+        ],
+        type='MultiView'),
+    dict(type='PackInputs'),
+]
+view_pipeline = [
+    dict(
+        backend='pillow',
+        crop_ratio_range=(
+            0.2,
+            1.0,
+        ),
+        interpolation='bicubic',
+        scale=32,
+        type='RandomResizedCrop'),
+    dict(prob=0.5, type='RandomFlip'),
+    dict(
+        prob=0.8,
+        transforms=[
+            dict(
+                brightness=0.4,
+                contrast=0.4,
+                hue=0.1,
+                saturation=0.4,
+                type='ColorJitter'),
+        ],
+        type='RandomApply'),
+    dict(
+        channel_weights=(
+            0.114,
+            0.587,
+            0.2989,
+        ),
+        keep_channels=True,
+        prob=0.2,
+        type='RandomGrayscale'),
+    dict(
+        magnitude_range=(
+            0.1,
+            2.0,
+        ),
+        magnitude_std='inf',
+        prob=0.5,
+        type='GaussianBlur'),
+]
+vis_backends = [
+    dict(type='LocalVisBackend'),
+]
+visualizer = dict(
+    type='UniversalVisualizer', vis_backends=[
+        dict(type='LocalVisBackend'),
+    ])
+work_dir = '/home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100'
+
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+01/22 21:58:59 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) VisualizationHook                  
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_test_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) VisualizationHook                  
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+Loads checkpoint by local backend from path: /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100/epoch_50.pth
+01/22 21:59:02 - mmengine - INFO - Auto resumed from the latest checkpoint /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100/epoch_50.pth.
+Loads checkpoint by local backend from path: /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100/epoch_50.pth
+01/22 21:59:03 - mmengine - INFO - Load checkpoint from /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100/epoch_50.pth
+01/22 21:59:03 - mmengine - INFO - resumed epoch: 50, iter: 9750
+01/22 21:59:03 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+01/22 21:59:03 - mmengine - WARNING - "HardDiskBackend" is the alias of "LocalBackend" and the former will be deprecated in future.
+01/22 21:59:03 - mmengine - INFO - Checkpoints will be saved to /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100.
+=============================================
+Training complete!
+Checkpoints saved to: /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar100
+=============================================

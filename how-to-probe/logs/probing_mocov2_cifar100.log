@@ -1,0 +1,629 @@
+nohup: ignoring input
+=============================================
+Linear Probing on CIFAR100
+=============================================
+Model: mocov2
+Config: /home/hkoc/UM/UM_SEM9/how-to-probe/probing/single_label_classification/mocov2_resnet50_linear-probe_cifar100.py
+Work Directory: /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/probing_mocov2_cifar100
+GPUs: 2
+=============================================
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmengine/utils/dl_utils/setup_env.py:56: UserWarning: Setting MKL_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  warnings.warn(
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmengine/utils/dl_utils/setup_env.py:56: UserWarning: Setting MKL_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  warnings.warn(
+01/23 14:17:51 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: linux
+    Python: 3.11.2 (main, Apr 28 2025, 14:11:48) [GCC 12.2.0]
+    CUDA available: True
+    numpy_random_seed: 1773061236
+    GPU 0,1: NVIDIA RTX A4000
+    CUDA_HOME: /usr/local/cuda
+    NVCC: Cuda compilation tools, release 13.1, V13.1.80
+    GCC: x86_64-linux-gnu-gcc (Debian 12.2.0-14+deb12u1) 12.2.0
+    PyTorch: 2.0.1+cu117
+    PyTorch compiling details: PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2022.2-Product Build 20220804 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.7.3 (Git Hash 6dbeffbae1f23cbbeae17adb7b5b13f1f37c080e)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.7
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86
+  - CuDNN 8.5
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.7, CUDNN_VERSION=8.5.0, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=0 -fabi-version=11 -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wunused-local-typedefs -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_DISABLE_GPU_ASSERTS=ON, TORCH_VERSION=2.0.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=1, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+    TorchVision: 0.15.2+cu117
+    OpenCV: 4.8.0
+    MMEngine: 0.8.4
+
+Runtime environment:
+    cudnn_benchmark: False
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 0}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 1773061236
+    deterministic: False
+    Distributed launcher: pytorch
+    Distributed training: True
+    GPU number: 2
+------------------------------------------------------------
+
+01/23 14:17:51 - mmengine - INFO - Config:
+auto_scale_lr = dict(base_batch_size=256)
+data_preprocessor = dict(
+    mean=[
+        129.304,
+        124.07,
+        112.434,
+    ],
+    num_classes=100,
+    std=[
+        68.17,
+        65.392,
+        70.418,
+    ],
+    to_rgb=False)
+data_root = 'data/cifar100'
+dataset_type = 'CIFAR100'
+default_hooks = dict(
+    checkpoint=dict(interval=10, max_keep_ckpts=3, type='CheckpointHook'),
+    logger=dict(interval=100, type='LoggerHook'),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    timer=dict(type='IterTimerHook'),
+    visualization=dict(enable=False, type='VisualizationHook'))
+default_scope = 'mmpretrain'
+env_cfg = dict(
+    cudnn_benchmark=False,
+    dist_cfg=dict(backend='nccl'),
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
+launcher = 'pytorch'
+load_from = None
+log_level = 'INFO'
+model = dict(
+    backbone=dict(
+        depth=50,
+        frozen_stages=4,
+        init_cfg=dict(
+            checkpoint='../../outputs/mocov2_cifar100/epoch_50.pth',
+            prefix='backbone.',
+            type='Pretrained'),
+        num_stages=4,
+        out_indices=(3, ),
+        style='pytorch',
+        type='ResNet_CIFAR'),
+    head=dict(
+        in_channels=2048,
+        loss=dict(type='CrossEntropyLoss'),
+        num_classes=100,
+        topk=(
+            1,
+            5,
+        ),
+        type='LinearClsHead',
+        with_avg_pool=True),
+    neck=None,
+    type='ImageClassifier')
+optim_wrapper = dict(
+    optimizer=dict(lr=0.1, momentum=0.9, type='SGD', weight_decay=0.0))
+param_scheduler = [
+    dict(
+        begin=0,
+        by_epoch=True,
+        convert_to_iter_based=True,
+        end=5,
+        start_factor=0.01,
+        type='LinearLR'),
+    dict(T_max=95, begin=5, by_epoch=True, end=100, type='CosineAnnealingLR'),
+]
+randomness = dict(deterministic=False, seed=None)
+resume = True
+test_cfg = dict()
+test_dataloader = dict(
+    batch_size=128,
+    collate_fn=dict(type='default_collate'),
+    dataset=dict(
+        data_root='data/cifar100',
+        pipeline=[
+            dict(type='PackInputs'),
+        ],
+        split='test',
+        type='CIFAR100'),
+    num_workers=4,
+    persistent_workers=True,
+    pin_memory=True,
+    sampler=dict(shuffle=False, type='DefaultSampler'))
+test_evaluator = dict(
+    topk=(
+        1,
+        5,
+    ), type='Accuracy')
+test_pipeline = [
+    dict(type='PackInputs'),
+]
+train_cfg = dict(by_epoch=True, max_epochs=100, val_interval=1)
+train_dataloader = dict(
+    batch_size=128,
+    collate_fn=dict(type='default_collate'),
+    dataset=dict(
+        data_root='data/cifar100',
+        pipeline=[
+            dict(crop_size=32, padding=4, type='RandomCrop'),
+            dict(direction='horizontal', prob=0.5, type='RandomFlip'),
+            dict(type='PackInputs'),
+        ],
+        split='train',
+        type='CIFAR100'),
+    num_workers=4,
+    persistent_workers=True,
+    pin_memory=True,
+    sampler=dict(shuffle=True, type='DefaultSampler'))
+train_pipeline = [
+    dict(crop_size=32, padding=4, type='RandomCrop'),
+    dict(direction='horizontal', prob=0.5, type='RandomFlip'),
+    dict(type='PackInputs'),
+]
+val_cfg = dict()
+val_dataloader = dict(
+    batch_size=128,
+    collate_fn=dict(type='default_collate'),
+    dataset=dict(
+        data_root='data/cifar100',
+        pipeline=[
+            dict(type='PackInputs'),
+        ],
+        split='test',
+        type='CIFAR100'),
+    num_workers=4,
+    persistent_workers=True,
+    pin_memory=True,
+    sampler=dict(shuffle=False, type='DefaultSampler'))
+val_evaluator = dict(
+    topk=(
+        1,
+        5,
+    ), type='Accuracy')
+vis_backends = [
+    dict(type='LocalVisBackend'),
+]
+visualizer = dict(
+    type='UniversalVisualizer', vis_backends=[
+        dict(type='LocalVisBackend'),
+    ])
+work_dir = '/home/hkoc/UM/UM_SEM9/how-to-probe/outputs/probing_mocov2_cifar100'
+
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+01/23 14:17:52 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) VisualizationHook                  
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_test_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) VisualizationHook                  
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+Loads checkpoint by local backend from path: ../../outputs/mocov2_cifar100/epoch_50.pth
+01/23 14:17:56 - mmengine - INFO - load backbone. in model from: ../../outputs/mocov2_cifar100/epoch_50.pth
+Loads checkpoint by local backend from path: ../../outputs/mocov2_cifar100/epoch_50.pth
+Did not find last_checkpoint to be resumed.
+Did not find last_checkpoint to be resumed.
+01/23 14:17:56 - mmengine - INFO - Auto resumed from the latest checkpoint None.
+01/23 14:17:56 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+01/23 14:17:56 - mmengine - WARNING - "HardDiskBackend" is the alias of "LocalBackend" and the former will be deprecated in future.
+01/23 14:17:56 - mmengine - INFO - Checkpoints will be saved to /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/probing_mocov2_cifar100.
+01/23 14:18:10 - mmengine - INFO - Epoch(train)   [1][100/196]  lr: 1.1011e-02  eta: 0:44:59  time: 0.1004  data_time: 0.0006  memory: 541  loss: 4.0853
+01/23 14:18:20 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:18:26 - mmengine - INFO - Epoch(val) [1][40/40]    accuracy/top1: 15.6100  accuracy/top5: 37.9200  data_time: 0.0055  time: 0.1043
+01/23 14:18:37 - mmengine - INFO - Epoch(train)   [2][100/196]  lr: 3.0831e-02  eta: 0:38:02  time: 0.1108  data_time: 0.0010  memory: 541  loss: 3.6296
+01/23 14:18:47 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:18:53 - mmengine - INFO - Epoch(val) [2][40/40]    accuracy/top1: 17.5800  accuracy/top5: 43.5500  data_time: 0.0013  time: 0.0990
+01/23 14:19:04 - mmengine - INFO - Epoch(train)   [3][100/196]  lr: 5.0652e-02  eta: 0:36:26  time: 0.1120  data_time: 0.0013  memory: 541  loss: 3.5605
+01/23 14:19:14 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:19:20 - mmengine - INFO - Epoch(val) [3][40/40]    accuracy/top1: 19.4400  accuracy/top5: 45.6500  data_time: 0.0009  time: 0.0945
+01/23 14:19:31 - mmengine - INFO - Epoch(train)   [4][100/196]  lr: 7.0472e-02  eta: 0:35:28  time: 0.1101  data_time: 0.0010  memory: 541  loss: 3.4570
+01/23 14:19:41 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:19:47 - mmengine - INFO - Epoch(val) [4][40/40]    accuracy/top1: 20.4500  accuracy/top5: 46.3800  data_time: 0.0008  time: 0.0999
+01/23 14:19:58 - mmengine - INFO - Epoch(train)   [5][100/196]  lr: 9.0292e-02  eta: 0:34:48  time: 0.1053  data_time: 0.0012  memory: 541  loss: 3.5090
+01/23 14:20:08 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:20:13 - mmengine - INFO - Epoch(val) [5][40/40]    accuracy/top1: 21.2200  accuracy/top5: 47.3400  data_time: 0.0013  time: 0.0959
+01/23 14:20:16 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:20:25 - mmengine - INFO - Epoch(train)   [6][100/196]  lr: 1.0000e-01  eta: 0:34:12  time: 0.1096  data_time: 0.0007  memory: 541  loss: 3.3589
+01/23 14:20:35 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:20:41 - mmengine - INFO - Epoch(val) [6][40/40]    accuracy/top1: 20.9100  accuracy/top5: 48.0900  data_time: 0.0012  time: 0.0977
+01/23 14:20:52 - mmengine - INFO - Epoch(train)   [7][100/196]  lr: 9.9973e-02  eta: 0:33:49  time: 0.1120  data_time: 0.0009  memory: 541  loss: 3.3537
+01/23 14:21:02 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:21:08 - mmengine - INFO - Epoch(val) [7][40/40]    accuracy/top1: 21.8600  accuracy/top5: 48.2500  data_time: 0.0010  time: 0.0967
+01/23 14:21:19 - mmengine - INFO - Epoch(train)   [8][100/196]  lr: 9.9891e-02  eta: 0:33:26  time: 0.1095  data_time: 0.0013  memory: 541  loss: 3.2602
+01/23 14:21:30 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:21:35 - mmengine - INFO - Epoch(val) [8][40/40]    accuracy/top1: 23.9100  accuracy/top5: 50.4500  data_time: 0.0009  time: 0.0971
+01/23 14:21:46 - mmengine - INFO - Epoch(train)   [9][100/196]  lr: 9.9754e-02  eta: 0:33:02  time: 0.1006  data_time: 0.0008  memory: 541  loss: 3.2181
+01/23 14:21:56 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:22:02 - mmengine - INFO - Epoch(val) [9][40/40]    accuracy/top1: 24.8300  accuracy/top5: 51.4500  data_time: 0.0009  time: 0.0947
+01/23 14:22:13 - mmengine - INFO - Epoch(train)  [10][100/196]  lr: 9.9563e-02  eta: 0:32:33  time: 0.1107  data_time: 0.0010  memory: 541  loss: 3.2125
+01/23 14:22:23 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:22:23 - mmengine - INFO - Saving checkpoint at 10 epochs
+01/23 14:22:29 - mmengine - INFO - Epoch(val) [10][40/40]    accuracy/top1: 25.1100  accuracy/top5: 51.5900  data_time: 0.0009  time: 0.0962
+01/23 14:22:34 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:22:40 - mmengine - INFO - Epoch(train)  [11][100/196]  lr: 9.9318e-02  eta: 0:32:12  time: 0.1098  data_time: 0.0011  memory: 541  loss: 3.2305
+01/23 14:22:51 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:22:56 - mmengine - INFO - Epoch(val) [11][40/40]    accuracy/top1: 24.7900  accuracy/top5: 52.1400  data_time: 0.0009  time: 0.0958
+01/23 14:23:08 - mmengine - INFO - Epoch(train)  [12][100/196]  lr: 9.9019e-02  eta: 0:31:52  time: 0.1109  data_time: 0.0009  memory: 541  loss: 3.2582
+01/23 14:23:18 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:23:24 - mmengine - INFO - Epoch(val) [12][40/40]    accuracy/top1: 25.9500  accuracy/top5: 54.1800  data_time: 0.0009  time: 0.0976
+01/23 14:23:35 - mmengine - INFO - Epoch(train)  [13][100/196]  lr: 9.8666e-02  eta: 0:31:30  time: 0.1114  data_time: 0.0012  memory: 541  loss: 3.0899
+01/23 14:23:46 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:23:51 - mmengine - INFO - Epoch(val) [13][40/40]    accuracy/top1: 25.5100  accuracy/top5: 52.5800  data_time: 0.0011  time: 0.0975
+01/23 14:24:02 - mmengine - INFO - Epoch(train)  [14][100/196]  lr: 9.8260e-02  eta: 0:31:10  time: 0.1154  data_time: 0.0015  memory: 541  loss: 3.1150
+01/23 14:24:13 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:24:19 - mmengine - INFO - Epoch(val) [14][40/40]    accuracy/top1: 26.3700  accuracy/top5: 53.8700  data_time: 0.0010  time: 0.0984
+01/23 14:24:29 - mmengine - INFO - Epoch(train)  [15][100/196]  lr: 9.7802e-02  eta: 0:30:46  time: 0.1105  data_time: 0.0012  memory: 541  loss: 3.1068
+01/23 14:24:40 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:24:45 - mmengine - INFO - Epoch(val) [15][40/40]    accuracy/top1: 25.1600  accuracy/top5: 53.0900  data_time: 0.0011  time: 0.1000
+01/23 14:24:52 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:24:56 - mmengine - INFO - Epoch(train)  [16][100/196]  lr: 9.7291e-02  eta: 0:30:23  time: 0.1015  data_time: 0.0009  memory: 541  loss: 3.0328
+01/23 14:25:06 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:25:12 - mmengine - INFO - Epoch(val) [16][40/40]    accuracy/top1: 26.7100  accuracy/top5: 54.6900  data_time: 0.0012  time: 0.0952
+01/23 14:25:23 - mmengine - INFO - Epoch(train)  [17][100/196]  lr: 9.6728e-02  eta: 0:29:58  time: 0.1101  data_time: 0.0012  memory: 541  loss: 3.0030
+01/23 14:25:33 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:25:39 - mmengine - INFO - Epoch(val) [17][40/40]    accuracy/top1: 25.3800  accuracy/top5: 54.0400  data_time: 0.0008  time: 0.1005
+01/23 14:25:50 - mmengine - INFO - Epoch(train)  [18][100/196]  lr: 9.6114e-02  eta: 0:29:36  time: 0.1096  data_time: 0.0012  memory: 541  loss: 3.0311
+01/23 14:26:00 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:26:06 - mmengine - INFO - Epoch(val) [18][40/40]    accuracy/top1: 26.4700  accuracy/top5: 54.6900  data_time: 0.0010  time: 0.0956
+01/23 14:26:17 - mmengine - INFO - Epoch(train)  [19][100/196]  lr: 9.5450e-02  eta: 0:29:13  time: 0.1102  data_time: 0.0012  memory: 541  loss: 3.1232
+01/23 14:26:28 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:26:33 - mmengine - INFO - Epoch(val) [19][40/40]    accuracy/top1: 26.7400  accuracy/top5: 54.5700  data_time: 0.0012  time: 0.0989
+01/23 14:26:44 - mmengine - INFO - Epoch(train)  [20][100/196]  lr: 9.4736e-02  eta: 0:28:49  time: 0.1003  data_time: 0.0008  memory: 541  loss: 2.9824
+01/23 14:26:54 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:26:54 - mmengine - INFO - Saving checkpoint at 20 epochs
+01/23 14:26:59 - mmengine - INFO - Epoch(val) [20][40/40]    accuracy/top1: 27.3800  accuracy/top5: 55.6200  data_time: 0.0008  time: 0.0979
+01/23 14:27:08 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:27:11 - mmengine - INFO - Epoch(train)  [21][100/196]  lr: 9.3974e-02  eta: 0:28:26  time: 0.1104  data_time: 0.0013  memory: 541  loss: 2.8969
+01/23 14:27:21 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:27:27 - mmengine - INFO - Epoch(val) [21][40/40]    accuracy/top1: 26.0900  accuracy/top5: 55.0100  data_time: 0.0011  time: 0.0976
+01/23 14:27:38 - mmengine - INFO - Epoch(train)  [22][100/196]  lr: 9.3163e-02  eta: 0:28:05  time: 0.1089  data_time: 0.0011  memory: 541  loss: 2.9171
+01/23 14:27:48 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:27:54 - mmengine - INFO - Epoch(val) [22][40/40]    accuracy/top1: 28.0500  accuracy/top5: 56.3500  data_time: 0.0012  time: 0.0978
+01/23 14:28:05 - mmengine - INFO - Epoch(train)  [23][100/196]  lr: 9.2305e-02  eta: 0:27:43  time: 0.1104  data_time: 0.0023  memory: 541  loss: 2.9562
+01/23 14:28:16 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:28:21 - mmengine - INFO - Epoch(val) [23][40/40]    accuracy/top1: 27.4500  accuracy/top5: 56.2000  data_time: 0.0010  time: 0.0974
+01/23 14:28:32 - mmengine - INFO - Epoch(train)  [24][100/196]  lr: 9.1400e-02  eta: 0:27:20  time: 0.1044  data_time: 0.0017  memory: 541  loss: 2.9060
+01/23 14:28:42 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:28:47 - mmengine - INFO - Epoch(val) [24][40/40]    accuracy/top1: 29.5900  accuracy/top5: 57.5000  data_time: 0.0008  time: 0.0927
+01/23 14:28:58 - mmengine - INFO - Epoch(train)  [25][100/196]  lr: 9.0451e-02  eta: 0:26:58  time: 0.1112  data_time: 0.0007  memory: 541  loss: 2.9824
+01/23 14:29:08 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:29:14 - mmengine - INFO - Epoch(val) [25][40/40]    accuracy/top1: 28.6800  accuracy/top5: 56.7700  data_time: 0.0009  time: 0.0974
+01/23 14:29:25 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:29:25 - mmengine - INFO - Epoch(train)  [26][100/196]  lr: 8.9457e-02  eta: 0:26:35  time: 0.1123  data_time: 0.0010  memory: 541  loss: 2.9753
+01/23 14:29:36 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:29:42 - mmengine - INFO - Epoch(val) [26][40/40]    accuracy/top1: 27.7500  accuracy/top5: 56.2600  data_time: 0.0012  time: 0.0987
+01/23 14:29:53 - mmengine - INFO - Epoch(train)  [27][100/196]  lr: 8.8420e-02  eta: 0:26:15  time: 0.1108  data_time: 0.0013  memory: 541  loss: 2.8734
+01/23 14:30:03 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:30:09 - mmengine - INFO - Epoch(val) [27][40/40]    accuracy/top1: 28.4400  accuracy/top5: 56.7400  data_time: 0.0010  time: 0.0994
+01/23 14:30:20 - mmengine - INFO - Epoch(train)  [28][100/196]  lr: 8.7341e-02  eta: 0:25:53  time: 0.1045  data_time: 0.0015  memory: 541  loss: 2.8937
+01/23 14:30:30 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:30:36 - mmengine - INFO - Epoch(val) [28][40/40]    accuracy/top1: 28.9300  accuracy/top5: 57.7200  data_time: 0.0011  time: 0.0989
+01/23 14:30:46 - mmengine - INFO - Epoch(train)  [29][100/196]  lr: 8.6221e-02  eta: 0:25:29  time: 0.1113  data_time: 0.0012  memory: 541  loss: 2.8947
+01/23 14:30:57 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:31:02 - mmengine - INFO - Epoch(val) [29][40/40]    accuracy/top1: 29.1200  accuracy/top5: 58.0200  data_time: 0.0009  time: 0.0964
+01/23 14:31:13 - mmengine - INFO - Epoch(train)  [30][100/196]  lr: 8.5062e-02  eta: 0:25:06  time: 0.1053  data_time: 0.0010  memory: 541  loss: 2.8442
+01/23 14:31:23 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:31:23 - mmengine - INFO - Saving checkpoint at 30 epochs
+01/23 14:31:29 - mmengine - INFO - Epoch(val) [30][40/40]    accuracy/top1: 28.8900  accuracy/top5: 56.7900  data_time: 0.0010  time: 0.0987
+01/23 14:31:40 - mmengine - INFO - Epoch(train)  [31][100/196]  lr: 8.3864e-02  eta: 0:24:45  time: 0.1109  data_time: 0.0011  memory: 541  loss: 2.8501
+01/23 14:31:42 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:31:51 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:31:56 - mmengine - INFO - Epoch(val) [31][40/40]    accuracy/top1: 27.6900  accuracy/top5: 57.2600  data_time: 0.0010  time: 0.0970
+01/23 14:32:07 - mmengine - INFO - Epoch(train)  [32][100/196]  lr: 8.2629e-02  eta: 0:24:24  time: 0.1115  data_time: 0.0011  memory: 541  loss: 2.8407
+01/23 14:32:18 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:32:24 - mmengine - INFO - Epoch(val) [32][40/40]    accuracy/top1: 28.6300  accuracy/top5: 57.7200  data_time: 0.0009  time: 0.0985
+01/23 14:32:35 - mmengine - INFO - Epoch(train)  [33][100/196]  lr: 8.1359e-02  eta: 0:24:03  time: 0.1097  data_time: 0.0009  memory: 541  loss: 2.9884
+01/23 14:32:45 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:32:51 - mmengine - INFO - Epoch(val) [33][40/40]    accuracy/top1: 29.2600  accuracy/top5: 57.0300  data_time: 0.0013  time: 0.1001
+01/23 14:33:02 - mmengine - INFO - Epoch(train)  [34][100/196]  lr: 8.0054e-02  eta: 0:23:42  time: 0.1098  data_time: 0.0009  memory: 541  loss: 2.7974
+01/23 14:33:12 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:33:17 - mmengine - INFO - Epoch(val) [34][40/40]    accuracy/top1: 29.9500  accuracy/top5: 58.2900  data_time: 0.0008  time: 0.0947
+01/23 14:33:28 - mmengine - INFO - Epoch(train)  [35][100/196]  lr: 7.8716e-02  eta: 0:23:18  time: 0.1038  data_time: 0.0010  memory: 541  loss: 2.9228
+01/23 14:33:38 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:33:44 - mmengine - INFO - Epoch(val) [35][40/40]    accuracy/top1: 29.2600  accuracy/top5: 58.5400  data_time: 0.0011  time: 0.0984
+01/23 14:33:55 - mmengine - INFO - Epoch(train)  [36][100/196]  lr: 7.7347e-02  eta: 0:22:57  time: 0.1098  data_time: 0.0011  memory: 541  loss: 2.8162
+01/23 14:33:59 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:34:05 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:34:11 - mmengine - INFO - Epoch(val) [36][40/40]    accuracy/top1: 29.6900  accuracy/top5: 58.5300  data_time: 0.0010  time: 0.0983
+01/23 14:34:22 - mmengine - INFO - Epoch(train)  [37][100/196]  lr: 7.5948e-02  eta: 0:22:36  time: 0.1098  data_time: 0.0010  memory: 541  loss: 2.8672
+01/23 14:34:33 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:34:38 - mmengine - INFO - Epoch(val) [37][40/40]    accuracy/top1: 29.9500  accuracy/top5: 58.6300  data_time: 0.0010  time: 0.0977
+01/23 14:34:50 - mmengine - INFO - Epoch(train)  [38][100/196]  lr: 7.4521e-02  eta: 0:22:15  time: 0.1099  data_time: 0.0010  memory: 541  loss: 2.7466
+01/23 14:35:00 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:35:06 - mmengine - INFO - Epoch(val) [38][40/40]    accuracy/top1: 30.3300  accuracy/top5: 58.5900  data_time: 0.0011  time: 0.0980
+01/23 14:35:17 - mmengine - INFO - Epoch(train)  [39][100/196]  lr: 7.3067e-02  eta: 0:21:53  time: 0.1090  data_time: 0.0015  memory: 541  loss: 2.7304
+01/23 14:35:26 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:35:32 - mmengine - INFO - Epoch(val) [39][40/40]    accuracy/top1: 29.0600  accuracy/top5: 58.3700  data_time: 0.0008  time: 0.0967
+01/23 14:35:43 - mmengine - INFO - Epoch(train)  [40][100/196]  lr: 7.1588e-02  eta: 0:21:31  time: 0.1111  data_time: 0.0011  memory: 541  loss: 2.7645
+01/23 14:35:54 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:35:54 - mmengine - INFO - Saving checkpoint at 40 epochs
+01/23 14:36:00 - mmengine - INFO - Epoch(val) [40][40/40]    accuracy/top1: 30.8400  accuracy/top5: 59.7600  data_time: 0.0008  time: 0.0964
+01/23 14:36:10 - mmengine - INFO - Epoch(train)  [41][100/196]  lr: 7.0085e-02  eta: 0:21:09  time: 0.1021  data_time: 0.0012  memory: 541  loss: 2.7803
+01/23 14:36:17 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:36:21 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:36:26 - mmengine - INFO - Epoch(val) [41][40/40]    accuracy/top1: 29.8600  accuracy/top5: 58.3500  data_time: 0.0010  time: 0.0982
+01/23 14:36:37 - mmengine - INFO - Epoch(train)  [42][100/196]  lr: 6.8560e-02  eta: 0:20:47  time: 0.1044  data_time: 0.0014  memory: 541  loss: 2.7815
+01/23 14:36:47 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:36:53 - mmengine - INFO - Epoch(val) [42][40/40]    accuracy/top1: 30.1200  accuracy/top5: 59.4600  data_time: 0.0011  time: 0.0968
+01/23 14:37:04 - mmengine - INFO - Epoch(train)  [43][100/196]  lr: 6.7015e-02  eta: 0:20:26  time: 0.1171  data_time: 0.0013  memory: 541  loss: 2.7980
+01/23 14:37:15 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:37:20 - mmengine - INFO - Epoch(val) [43][40/40]    accuracy/top1: 30.1300  accuracy/top5: 58.6700  data_time: 0.0008  time: 0.0980
+01/23 14:37:31 - mmengine - INFO - Epoch(train)  [44][100/196]  lr: 6.5451e-02  eta: 0:20:05  time: 0.1103  data_time: 0.0016  memory: 541  loss: 2.6136
+01/23 14:37:42 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:37:48 - mmengine - INFO - Epoch(val) [44][40/40]    accuracy/top1: 30.2000  accuracy/top5: 59.2600  data_time: 0.0008  time: 0.0964
+01/23 14:37:58 - mmengine - INFO - Epoch(train)  [45][100/196]  lr: 6.3870e-02  eta: 0:19:44  time: 0.1008  data_time: 0.0013  memory: 541  loss: 2.7435
+01/23 14:38:08 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:38:14 - mmengine - INFO - Epoch(val) [45][40/40]    accuracy/top1: 30.9000  accuracy/top5: 59.6100  data_time: 0.0011  time: 0.0954
+01/23 14:38:25 - mmengine - INFO - Epoch(train)  [46][100/196]  lr: 6.2274e-02  eta: 0:19:22  time: 0.1101  data_time: 0.0012  memory: 541  loss: 2.7788
+01/23 14:38:33 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:38:35 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:38:41 - mmengine - INFO - Epoch(val) [46][40/40]    accuracy/top1: 31.1700  accuracy/top5: 59.5400  data_time: 0.0010  time: 0.0938
+01/23 14:38:52 - mmengine - INFO - Epoch(train)  [47][100/196]  lr: 6.0665e-02  eta: 0:19:01  time: 0.1210  data_time: 0.0016  memory: 541  loss: 2.7218
+01/23 14:39:03 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:39:08 - mmengine - INFO - Epoch(val) [47][40/40]    accuracy/top1: 31.2500  accuracy/top5: 59.6700  data_time: 0.0008  time: 0.0967
+01/23 14:39:19 - mmengine - INFO - Epoch(train)  [48][100/196]  lr: 5.9044e-02  eta: 0:18:39  time: 0.1033  data_time: 0.0009  memory: 541  loss: 2.6720
+01/23 14:39:29 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:39:34 - mmengine - INFO - Epoch(val) [48][40/40]    accuracy/top1: 30.5800  accuracy/top5: 59.6700  data_time: 0.0011  time: 0.0957
+01/23 14:39:45 - mmengine - INFO - Epoch(train)  [49][100/196]  lr: 5.7413e-02  eta: 0:18:17  time: 0.1105  data_time: 0.0012  memory: 541  loss: 2.6594
+01/23 14:39:56 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:40:01 - mmengine - INFO - Epoch(val) [49][40/40]    accuracy/top1: 30.9500  accuracy/top5: 59.3700  data_time: 0.0010  time: 0.0973
+01/23 14:40:12 - mmengine - INFO - Epoch(train)  [50][100/196]  lr: 5.5774e-02  eta: 0:17:56  time: 0.1045  data_time: 0.0013  memory: 541  loss: 2.6823
+01/23 14:40:22 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:40:22 - mmengine - INFO - Saving checkpoint at 50 epochs
+01/23 14:40:28 - mmengine - INFO - Epoch(val) [50][40/40]    accuracy/top1: 31.4600  accuracy/top5: 59.6900  data_time: 0.0008  time: 0.0984
+01/23 14:40:39 - mmengine - INFO - Epoch(train)  [51][100/196]  lr: 5.4129e-02  eta: 0:17:34  time: 0.1104  data_time: 0.0012  memory: 541  loss: 2.6968
+01/23 14:40:50 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:40:56 - mmengine - INFO - Epoch(val) [51][40/40]    accuracy/top1: 31.1600  accuracy/top5: 60.7000  data_time: 0.0010  time: 0.0986
+01/23 14:40:56 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:41:07 - mmengine - INFO - Epoch(train)  [52][100/196]  lr: 5.2479e-02  eta: 0:17:13  time: 0.1113  data_time: 0.0012  memory: 541  loss: 2.6579
+01/23 14:41:17 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:41:23 - mmengine - INFO - Epoch(val) [52][40/40]    accuracy/top1: 32.0800  accuracy/top5: 60.2800  data_time: 0.0009  time: 0.0980
+01/23 14:41:34 - mmengine - INFO - Epoch(train)  [53][100/196]  lr: 5.0827e-02  eta: 0:16:52  time: 0.1031  data_time: 0.0018  memory: 541  loss: 2.6008
+01/23 14:41:44 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:41:49 - mmengine - INFO - Epoch(val) [53][40/40]    accuracy/top1: 31.7700  accuracy/top5: 60.6900  data_time: 0.0036  time: 0.0999
+01/23 14:42:01 - mmengine - INFO - Epoch(train)  [54][100/196]  lr: 4.9173e-02  eta: 0:16:30  time: 0.1061  data_time: 0.0012  memory: 541  loss: 2.6102
+01/23 14:42:11 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:42:16 - mmengine - INFO - Epoch(val) [54][40/40]    accuracy/top1: 32.3500  accuracy/top5: 60.8900  data_time: 0.0008  time: 0.0963
+01/23 14:42:27 - mmengine - INFO - Epoch(train)  [55][100/196]  lr: 4.7521e-02  eta: 0:16:09  time: 0.1100  data_time: 0.0008  memory: 541  loss: 2.6981
+01/23 14:42:38 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:42:44 - mmengine - INFO - Epoch(val) [55][40/40]    accuracy/top1: 31.8900  accuracy/top5: 60.0800  data_time: 0.0010  time: 0.0990
+01/23 14:42:55 - mmengine - INFO - Epoch(train)  [56][100/196]  lr: 4.5871e-02  eta: 0:15:48  time: 0.1183  data_time: 0.0013  memory: 541  loss: 2.7064
+01/23 14:43:05 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:43:11 - mmengine - INFO - Epoch(val) [56][40/40]    accuracy/top1: 31.2500  accuracy/top5: 60.3400  data_time: 0.0008  time: 0.0950
+01/23 14:43:13 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:43:22 - mmengine - INFO - Epoch(train)  [57][100/196]  lr: 4.4226e-02  eta: 0:15:26  time: 0.1082  data_time: 0.0012  memory: 541  loss: 2.6271
+01/23 14:43:32 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:43:37 - mmengine - INFO - Epoch(val) [57][40/40]    accuracy/top1: 32.6800  accuracy/top5: 60.7300  data_time: 0.0011  time: 0.0942
+01/23 14:43:49 - mmengine - INFO - Epoch(train)  [58][100/196]  lr: 4.2587e-02  eta: 0:15:05  time: 0.1110  data_time: 0.0012  memory: 541  loss: 2.5801
+01/23 14:43:59 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:44:04 - mmengine - INFO - Epoch(val) [58][40/40]    accuracy/top1: 32.1000  accuracy/top5: 61.2100  data_time: 0.0009  time: 0.0947
+01/23 14:44:16 - mmengine - INFO - Epoch(train)  [59][100/196]  lr: 4.0956e-02  eta: 0:14:44  time: 0.1120  data_time: 0.0020  memory: 541  loss: 2.6429
+01/23 14:44:26 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:44:32 - mmengine - INFO - Epoch(val) [59][40/40]    accuracy/top1: 32.5700  accuracy/top5: 61.4200  data_time: 0.0015  time: 0.0985
+01/23 14:44:43 - mmengine - INFO - Epoch(train)  [60][100/196]  lr: 3.9335e-02  eta: 0:14:23  time: 0.1181  data_time: 0.0012  memory: 541  loss: 2.5918
+01/23 14:44:54 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:44:54 - mmengine - INFO - Saving checkpoint at 60 epochs
+01/23 14:45:00 - mmengine - INFO - Epoch(val) [60][40/40]    accuracy/top1: 32.1800  accuracy/top5: 60.8700  data_time: 0.0007  time: 0.0980
+01/23 14:45:11 - mmengine - INFO - Epoch(train)  [61][100/196]  lr: 3.7726e-02  eta: 0:14:02  time: 0.1106  data_time: 0.0014  memory: 541  loss: 2.6479
+01/23 14:45:22 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:45:27 - mmengine - INFO - Epoch(val) [61][40/40]    accuracy/top1: 32.4400  accuracy/top5: 61.7400  data_time: 0.0007  time: 0.0966
+01/23 14:45:32 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:45:38 - mmengine - INFO - Epoch(train)  [62][100/196]  lr: 3.6130e-02  eta: 0:13:40  time: 0.1042  data_time: 0.0016  memory: 541  loss: 2.6257
+01/23 14:45:48 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:45:53 - mmengine - INFO - Epoch(val) [62][40/40]    accuracy/top1: 33.2800  accuracy/top5: 61.5500  data_time: 0.0008  time: 0.0903
+01/23 14:46:05 - mmengine - INFO - Epoch(train)  [63][100/196]  lr: 3.4549e-02  eta: 0:13:19  time: 0.1103  data_time: 0.0012  memory: 541  loss: 2.5509
+01/23 14:46:15 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:46:21 - mmengine - INFO - Epoch(val) [63][40/40]    accuracy/top1: 32.7700  accuracy/top5: 60.7800  data_time: 0.0014  time: 0.0974
+01/23 14:46:32 - mmengine - INFO - Epoch(train)  [64][100/196]  lr: 3.2985e-02  eta: 0:12:58  time: 0.1099  data_time: 0.0010  memory: 541  loss: 2.5347
+01/23 14:46:42 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:46:48 - mmengine - INFO - Epoch(val) [64][40/40]    accuracy/top1: 32.5900  accuracy/top5: 62.2900  data_time: 0.0010  time: 0.0962
+01/23 14:46:59 - mmengine - INFO - Epoch(train)  [65][100/196]  lr: 3.1440e-02  eta: 0:12:36  time: 0.1102  data_time: 0.0014  memory: 541  loss: 2.5557
+01/23 14:47:10 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:47:15 - mmengine - INFO - Epoch(val) [65][40/40]    accuracy/top1: 32.7400  accuracy/top5: 61.6200  data_time: 0.0010  time: 0.0985
+01/23 14:47:26 - mmengine - INFO - Epoch(train)  [66][100/196]  lr: 2.9915e-02  eta: 0:12:15  time: 0.1108  data_time: 0.0012  memory: 541  loss: 2.5496
+01/23 14:47:37 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:47:43 - mmengine - INFO - Epoch(val) [66][40/40]    accuracy/top1: 33.3100  accuracy/top5: 62.2800  data_time: 0.0010  time: 0.0962
+01/23 14:47:49 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:47:53 - mmengine - INFO - Epoch(train)  [67][100/196]  lr: 2.8412e-02  eta: 0:11:54  time: 0.1030  data_time: 0.0006  memory: 541  loss: 2.5486
+01/23 14:48:03 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:48:09 - mmengine - INFO - Epoch(val) [67][40/40]    accuracy/top1: 33.1800  accuracy/top5: 62.5600  data_time: 0.0008  time: 0.0970
+01/23 14:48:20 - mmengine - INFO - Epoch(train)  [68][100/196]  lr: 2.6933e-02  eta: 0:11:32  time: 0.1106  data_time: 0.0015  memory: 541  loss: 2.5544
+01/23 14:48:31 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:48:36 - mmengine - INFO - Epoch(val) [68][40/40]    accuracy/top1: 33.4000  accuracy/top5: 62.0900  data_time: 0.0009  time: 0.0967
+01/23 14:48:48 - mmengine - INFO - Epoch(train)  [69][100/196]  lr: 2.5479e-02  eta: 0:11:11  time: 0.1103  data_time: 0.0022  memory: 541  loss: 2.5803
+01/23 14:48:58 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:49:04 - mmengine - INFO - Epoch(val) [69][40/40]    accuracy/top1: 33.4200  accuracy/top5: 62.4400  data_time: 0.0011  time: 0.0983
+01/23 14:49:14 - mmengine - INFO - Epoch(train)  [70][100/196]  lr: 2.4052e-02  eta: 0:10:50  time: 0.1051  data_time: 0.0019  memory: 541  loss: 2.5937
+01/23 14:49:24 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:49:24 - mmengine - INFO - Saving checkpoint at 70 epochs
+01/23 14:49:30 - mmengine - INFO - Epoch(val) [70][40/40]    accuracy/top1: 33.6500  accuracy/top5: 62.0300  data_time: 0.0011  time: 0.1002
+01/23 14:49:41 - mmengine - INFO - Epoch(train)  [71][100/196]  lr: 2.2653e-02  eta: 0:10:28  time: 0.1118  data_time: 0.0011  memory: 541  loss: 2.4802
+01/23 14:49:52 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:49:58 - mmengine - INFO - Epoch(val) [71][40/40]    accuracy/top1: 33.4200  accuracy/top5: 62.5300  data_time: 0.0015  time: 0.0984
+01/23 14:50:06 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:50:08 - mmengine - INFO - Epoch(train)  [72][100/196]  lr: 2.1284e-02  eta: 0:10:07  time: 0.1044  data_time: 0.0007  memory: 541  loss: 2.5659
+01/23 14:50:18 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:50:24 - mmengine - INFO - Epoch(val) [72][40/40]    accuracy/top1: 33.1500  accuracy/top5: 62.5200  data_time: 0.0014  time: 0.0987
+01/23 14:50:35 - mmengine - INFO - Epoch(train)  [73][100/196]  lr: 1.9946e-02  eta: 0:09:45  time: 0.1035  data_time: 0.0012  memory: 541  loss: 2.6422
+01/23 14:50:45 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:50:51 - mmengine - INFO - Epoch(val) [73][40/40]    accuracy/top1: 33.8300  accuracy/top5: 62.8200  data_time: 0.0008  time: 0.0966
+01/23 14:51:02 - mmengine - INFO - Epoch(train)  [74][100/196]  lr: 1.8641e-02  eta: 0:09:24  time: 0.1089  data_time: 0.0012  memory: 541  loss: 2.4945
+01/23 14:51:12 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:51:18 - mmengine - INFO - Epoch(val) [74][40/40]    accuracy/top1: 33.5400  accuracy/top5: 62.2300  data_time: 0.0009  time: 0.0964
+01/23 14:51:28 - mmengine - INFO - Epoch(train)  [75][100/196]  lr: 1.7371e-02  eta: 0:09:03  time: 0.1032  data_time: 0.0019  memory: 541  loss: 2.4475
+01/23 14:51:38 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:51:44 - mmengine - INFO - Epoch(val) [75][40/40]    accuracy/top1: 33.3400  accuracy/top5: 62.5200  data_time: 0.0013  time: 0.0990
+01/23 14:51:56 - mmengine - INFO - Epoch(train)  [76][100/196]  lr: 1.6136e-02  eta: 0:08:41  time: 0.1098  data_time: 0.0012  memory: 541  loss: 2.5399
+01/23 14:52:06 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:52:12 - mmengine - INFO - Epoch(val) [76][40/40]    accuracy/top1: 33.6700  accuracy/top5: 62.8500  data_time: 0.0011  time: 0.0971
+01/23 14:52:23 - mmengine - INFO - Epoch(train)  [77][100/196]  lr: 1.4938e-02  eta: 0:08:20  time: 0.1127  data_time: 0.0014  memory: 541  loss: 2.5465
+01/23 14:52:23 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:52:33 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:52:39 - mmengine - INFO - Epoch(val) [77][40/40]    accuracy/top1: 33.9100  accuracy/top5: 62.9400  data_time: 0.0014  time: 0.0951
+01/23 14:52:50 - mmengine - INFO - Epoch(train)  [78][100/196]  lr: 1.3779e-02  eta: 0:07:59  time: 0.1112  data_time: 0.0011  memory: 541  loss: 2.5303
+01/23 14:53:00 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:53:06 - mmengine - INFO - Epoch(val) [78][40/40]    accuracy/top1: 34.0500  accuracy/top5: 62.7500  data_time: 0.0013  time: 0.0993
+01/23 14:53:18 - mmengine - INFO - Epoch(train)  [79][100/196]  lr: 1.2659e-02  eta: 0:07:38  time: 0.1173  data_time: 0.0010  memory: 541  loss: 2.5227
+01/23 14:53:28 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:53:33 - mmengine - INFO - Epoch(val) [79][40/40]    accuracy/top1: 33.9900  accuracy/top5: 62.9400  data_time: 0.0012  time: 0.0991
+01/23 14:53:45 - mmengine - INFO - Epoch(train)  [80][100/196]  lr: 1.1580e-02  eta: 0:07:16  time: 0.1198  data_time: 0.0014  memory: 541  loss: 2.6014
+01/23 14:53:55 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:53:55 - mmengine - INFO - Saving checkpoint at 80 epochs
+01/23 14:54:01 - mmengine - INFO - Epoch(val) [80][40/40]    accuracy/top1: 33.8800  accuracy/top5: 62.6200  data_time: 0.0011  time: 0.0966
+01/23 14:54:12 - mmengine - INFO - Epoch(train)  [81][100/196]  lr: 1.0543e-02  eta: 0:06:55  time: 0.1102  data_time: 0.0013  memory: 541  loss: 2.4328
+01/23 14:54:23 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:54:29 - mmengine - INFO - Epoch(val) [81][40/40]    accuracy/top1: 33.4200  accuracy/top5: 62.6500  data_time: 0.0010  time: 0.0984
+01/23 14:54:40 - mmengine - INFO - Epoch(train)  [82][100/196]  lr: 9.5492e-03  eta: 0:06:34  time: 0.1110  data_time: 0.0014  memory: 541  loss: 2.5528
+01/23 14:54:42 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:54:50 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:54:56 - mmengine - INFO - Epoch(val) [82][40/40]    accuracy/top1: 33.8300  accuracy/top5: 62.5900  data_time: 0.0008  time: 0.0964
+01/23 14:55:07 - mmengine - INFO - Epoch(train)  [83][100/196]  lr: 8.5996e-03  eta: 0:06:12  time: 0.1065  data_time: 0.0027  memory: 541  loss: 2.5048
+01/23 14:55:17 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:55:23 - mmengine - INFO - Epoch(val) [83][40/40]    accuracy/top1: 34.0700  accuracy/top5: 62.8200  data_time: 0.0009  time: 0.0966
+01/23 14:55:34 - mmengine - INFO - Epoch(train)  [84][100/196]  lr: 7.6952e-03  eta: 0:05:51  time: 0.1023  data_time: 0.0009  memory: 541  loss: 2.5508
+01/23 14:55:43 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:55:49 - mmengine - INFO - Epoch(val) [84][40/40]    accuracy/top1: 34.0100  accuracy/top5: 62.8400  data_time: 0.0007  time: 0.0953
+01/23 14:56:00 - mmengine - INFO - Epoch(train)  [85][100/196]  lr: 6.8372e-03  eta: 0:05:30  time: 0.1105  data_time: 0.0022  memory: 541  loss: 2.4795
+01/23 14:56:11 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:56:17 - mmengine - INFO - Epoch(val) [85][40/40]    accuracy/top1: 34.4300  accuracy/top5: 63.0000  data_time: 0.0010  time: 0.0989
+01/23 14:56:28 - mmengine - INFO - Epoch(train)  [86][100/196]  lr: 6.0263e-03  eta: 0:05:08  time: 0.1108  data_time: 0.0016  memory: 541  loss: 2.4491
+01/23 14:56:38 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:56:44 - mmengine - INFO - Epoch(val) [86][40/40]    accuracy/top1: 34.1600  accuracy/top5: 63.3100  data_time: 0.0009  time: 0.0984
+01/23 14:56:54 - mmengine - INFO - Epoch(train)  [87][100/196]  lr: 5.2635e-03  eta: 0:04:47  time: 0.1053  data_time: 0.0013  memory: 541  loss: 2.4121
+01/23 14:56:59 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:57:05 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:57:10 - mmengine - INFO - Epoch(val) [87][40/40]    accuracy/top1: 34.1300  accuracy/top5: 63.0300  data_time: 0.0010  time: 0.0944
+01/23 14:57:21 - mmengine - INFO - Epoch(train)  [88][100/196]  lr: 4.5497e-03  eta: 0:04:26  time: 0.1115  data_time: 0.0017  memory: 541  loss: 2.4900
+01/23 14:57:32 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:57:38 - mmengine - INFO - Epoch(val) [88][40/40]    accuracy/top1: 34.1000  accuracy/top5: 62.9700  data_time: 0.0008  time: 0.0966
+01/23 14:57:49 - mmengine - INFO - Epoch(train)  [89][100/196]  lr: 3.8855e-03  eta: 0:04:05  time: 0.1123  data_time: 0.0014  memory: 541  loss: 2.5391
+01/23 14:57:59 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:58:05 - mmengine - INFO - Epoch(val) [89][40/40]    accuracy/top1: 34.2800  accuracy/top5: 62.9900  data_time: 0.0010  time: 0.0968
+01/23 14:58:16 - mmengine - INFO - Epoch(train)  [90][100/196]  lr: 3.2718e-03  eta: 0:03:43  time: 0.1043  data_time: 0.0015  memory: 541  loss: 2.5180
+01/23 14:58:26 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:58:26 - mmengine - INFO - Saving checkpoint at 90 epochs
+01/23 14:58:32 - mmengine - INFO - Epoch(val) [90][40/40]    accuracy/top1: 34.3700  accuracy/top5: 62.9500  data_time: 0.0010  time: 0.0979
+01/23 14:58:42 - mmengine - INFO - Epoch(train)  [91][100/196]  lr: 2.7091e-03  eta: 0:03:22  time: 0.1045  data_time: 0.0008  memory: 541  loss: 2.4451
+01/23 14:58:52 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:58:58 - mmengine - INFO - Epoch(val) [91][40/40]    accuracy/top1: 34.1700  accuracy/top5: 63.0700  data_time: 0.0017  time: 0.0958
+01/23 14:59:09 - mmengine - INFO - Epoch(train)  [92][100/196]  lr: 2.1982e-03  eta: 0:03:00  time: 0.1109  data_time: 0.0013  memory: 541  loss: 2.4881
+01/23 14:59:17 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:59:20 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:59:26 - mmengine - INFO - Epoch(val) [92][40/40]    accuracy/top1: 34.1500  accuracy/top5: 63.0100  data_time: 0.0009  time: 0.1008
+01/23 14:59:37 - mmengine - INFO - Epoch(train)  [93][100/196]  lr: 1.7396e-03  eta: 0:02:39  time: 0.1110  data_time: 0.0015  memory: 541  loss: 2.4784
+01/23 14:59:47 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 14:59:53 - mmengine - INFO - Epoch(val) [93][40/40]    accuracy/top1: 34.1300  accuracy/top5: 63.1300  data_time: 0.0008  time: 0.0964
+01/23 15:00:04 - mmengine - INFO - Epoch(train)  [94][100/196]  lr: 1.3337e-03  eta: 0:02:18  time: 0.1182  data_time: 0.0019  memory: 541  loss: 2.5327
+01/23 15:00:15 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:00:20 - mmengine - INFO - Epoch(val) [94][40/40]    accuracy/top1: 34.2300  accuracy/top5: 63.1700  data_time: 0.0010  time: 0.0972
+01/23 15:00:32 - mmengine - INFO - Epoch(train)  [95][100/196]  lr: 9.8100e-04  eta: 0:01:57  time: 0.1108  data_time: 0.0016  memory: 541  loss: 2.4409
+01/23 15:00:42 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:00:48 - mmengine - INFO - Epoch(val) [95][40/40]    accuracy/top1: 34.1400  accuracy/top5: 62.9900  data_time: 0.0008  time: 0.0964
+01/23 15:00:59 - mmengine - INFO - Epoch(train)  [96][100/196]  lr: 6.8193e-04  eta: 0:01:35  time: 0.1120  data_time: 0.0016  memory: 541  loss: 2.5649
+01/23 15:01:10 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:01:15 - mmengine - INFO - Epoch(val) [96][40/40]    accuracy/top1: 34.1400  accuracy/top5: 63.1200  data_time: 0.0009  time: 0.0944
+01/23 15:01:27 - mmengine - INFO - Epoch(train)  [97][100/196]  lr: 4.3680e-04  eta: 0:01:14  time: 0.1118  data_time: 0.0016  memory: 541  loss: 2.4837
+01/23 15:01:36 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:01:37 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:01:43 - mmengine - INFO - Epoch(val) [97][40/40]    accuracy/top1: 34.1400  accuracy/top5: 63.1600  data_time: 0.0010  time: 0.0965
+01/23 15:01:54 - mmengine - INFO - Epoch(train)  [98][100/196]  lr: 2.4585e-04  eta: 0:00:53  time: 0.1110  data_time: 0.0016  memory: 541  loss: 2.4524
+01/23 15:02:05 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:02:11 - mmengine - INFO - Epoch(val) [98][40/40]    accuracy/top1: 34.2200  accuracy/top5: 63.1800  data_time: 0.0008  time: 0.0965
+01/23 15:02:22 - mmengine - INFO - Epoch(train)  [99][100/196]  lr: 1.0932e-04  eta: 0:00:31  time: 0.1095  data_time: 0.0019  memory: 541  loss: 2.4168
+01/23 15:02:32 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:02:38 - mmengine - INFO - Epoch(val) [99][40/40]    accuracy/top1: 34.2000  accuracy/top5: 63.1800  data_time: 0.0010  time: 0.0964
+01/23 15:02:49 - mmengine - INFO - Epoch(train) [100][100/196]  lr: 2.7337e-05  eta: 0:00:10  time: 0.1111  data_time: 0.0017  memory: 541  loss: 2.4515
+01/23 15:03:00 - mmengine - INFO - Exp name: mocov2_resnet50_linear-probe_cifar100_20260123_141749
+01/23 15:03:00 - mmengine - INFO - Saving checkpoint at 100 epochs
+01/23 15:03:05 - mmengine - INFO - Epoch(val) [100][40/40]    accuracy/top1: 34.1800  accuracy/top5: 63.2100  data_time: 0.0009  time: 0.0960
