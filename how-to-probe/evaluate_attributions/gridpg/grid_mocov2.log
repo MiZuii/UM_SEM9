@@ -1,0 +1,19 @@
+Loaded images per class:
+  Class 0: 86 images
+  Class 1: 100 images
+  Class 2: 22 images
+  Class 3: 1 images
+  Class 4: 11 images
+  Class 5: 15 images
+  Class 6: 100 images
+  Class 7: 100 images
+  Class 8: 100 images
+  Class 9: 65 images
+
+Creating 500 2x2 grid images...
+  Saved 2x2 grids to grid_pg_images_2x2_cifar10_mocov2
+
+Creating 500 3x3 grid images...
+  Saved 3x3 grids to grid_pg_images_3x3_cifar10_mocov2
+
+Done!

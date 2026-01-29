@@ -1,0 +1,642 @@
+=============================================
+MoCo v2 Training on CIFAR10
+=============================================
+Config: /home/hkoc/UM/UM_SEM9/how-to-probe/pretraining/mmpretrain/configs/mocov2/mocov2_resnet50_2xb128-coslr-50e_cifar10.py
+Work Directory: /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar10
+=============================================
+Detected 2 GPU(s)
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmengine/utils/dl_utils/setup_env.py:56: UserWarning: Setting MKL_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  warnings.warn(
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmengine/utils/dl_utils/setup_env.py:56: UserWarning: Setting MKL_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  warnings.warn(
+01/21 13:31:25 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: linux
+    Python: 3.11.2 (main, Apr 28 2025, 14:11:48) [GCC 12.2.0]
+    CUDA available: True
+    numpy_random_seed: 1383973522
+    GPU 0,1: NVIDIA RTX A4000
+    CUDA_HOME: /usr/local/cuda
+    NVCC: Cuda compilation tools, release 13.1, V13.1.80
+    GCC: x86_64-linux-gnu-gcc (Debian 12.2.0-14+deb12u1) 12.2.0
+    PyTorch: 2.0.1+cu117
+    PyTorch compiling details: PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2022.2-Product Build 20220804 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.7.3 (Git Hash 6dbeffbae1f23cbbeae17adb7b5b13f1f37c080e)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.7
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86
+  - CuDNN 8.5
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.7, CUDNN_VERSION=8.5.0, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=0 -fabi-version=11 -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wunused-local-typedefs -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_DISABLE_GPU_ASSERTS=ON, TORCH_VERSION=2.0.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=1, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+    TorchVision: 0.15.2+cu117
+    OpenCV: 4.8.0
+    MMEngine: 0.8.4
+
+Runtime environment:
+    cudnn_benchmark: False
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 0}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 1383973522
+    deterministic: False
+    Distributed launcher: pytorch
+    Distributed training: True
+    GPU number: 2
+------------------------------------------------------------
+
+01/21 13:31:25 - mmengine - INFO - Config:
+auto_scale_lr = dict(base_batch_size=256)
+data_preprocessor = dict(
+    mean=[
+        125.307,
+        122.961,
+        113.8575,
+    ],
+    std=[
+        51.5865,
+        50.847,
+        51.255,
+    ],
+    to_rgb=False,
+    type='SelfSupDataPreprocessor')
+data_root = 'data/cifar10'
+dataset_type = 'CIFAR10'
+default_hooks = dict(
+    checkpoint=dict(interval=1, max_keep_ckpts=3, type='CheckpointHook'),
+    logger=dict(interval=100, type='LoggerHook'),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    timer=dict(type='IterTimerHook'),
+    visualization=dict(enable=False, type='VisualizationHook'))
+default_scope = 'mmpretrain'
+env_cfg = dict(
+    cudnn_benchmark=False,
+    dist_cfg=dict(backend='nccl'),
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
+launcher = 'pytorch'
+load_from = None
+log_level = 'INFO'
+model = dict(
+    backbone=dict(
+        depth=50,
+        num_stages=4,
+        out_indices=(3, ),
+        style='pytorch',
+        type='ResNet_CIFAR'),
+    feat_dim=128,
+    head=dict(
+        loss=dict(type='CrossEntropyLoss'),
+        temperature=0.2,
+        type='ContrastiveHead'),
+    momentum=0.001,
+    neck=dict(
+        hid_channels=2048,
+        in_channels=2048,
+        out_channels=128,
+        type='MoCoV2Neck',
+        with_avg_pool=True),
+    queue_len=4096,
+    type='MoCo')
+optim_wrapper = dict(
+    optimizer=dict(lr=0.03, momentum=0.9, type='SGD', weight_decay=0.0001),
+    type='OptimWrapper')
+param_scheduler = [
+    dict(
+        begin=0,
+        by_epoch=True,
+        convert_to_iter_based=True,
+        end=5,
+        start_factor=0.0001,
+        type='LinearLR'),
+    dict(T_max=45, begin=5, by_epoch=True, end=50, type='CosineAnnealingLR'),
+]
+randomness = dict(deterministic=False, seed=None)
+resume = True
+train_cfg = dict(max_epochs=50, type='EpochBasedTrainLoop')
+train_dataloader = dict(
+    batch_size=128,
+    collate_fn=dict(type='default_collate'),
+    dataset=dict(
+        data_root='data/cifar10',
+        pipeline=[
+            dict(
+                num_views=[
+                    1,
+                    1,
+                ],
+                transforms=[
+                    [
+                        dict(
+                            backend='pillow',
+                            crop_ratio_range=(
+                                0.2,
+                                1.0,
+                            ),
+                            interpolation='bicubic',
+                            scale=32,
+                            type='RandomResizedCrop'),
+                        dict(prob=0.5, type='RandomFlip'),
+                        dict(
+                            prob=0.8,
+                            transforms=[
+                                dict(
+                                    brightness=0.4,
+                                    contrast=0.4,
+                                    hue=0.1,
+                                    saturation=0.4,
+                                    type='ColorJitter'),
+                            ],
+                            type='RandomApply'),
+                        dict(
+                            channel_weights=(
+                                0.114,
+                                0.587,
+                                0.2989,
+                            ),
+                            keep_channels=True,
+                            prob=0.2,
+                            type='RandomGrayscale'),
+                        dict(
+                            magnitude_range=(
+                                0.1,
+                                2.0,
+                            ),
+                            magnitude_std='inf',
+                            prob=0.5,
+                            type='GaussianBlur'),
+                    ],
+                    [
+                        dict(
+                            backend='pillow',
+                            crop_ratio_range=(
+                                0.2,
+                                1.0,
+                            ),
+                            interpolation='bicubic',
+                            scale=32,
+                            type='RandomResizedCrop'),
+                        dict(prob=0.5, type='RandomFlip'),
+                        dict(
+                            prob=0.8,
+                            transforms=[
+                                dict(
+                                    brightness=0.4,
+                                    contrast=0.4,
+                                    hue=0.1,
+                                    saturation=0.4,
+                                    type='ColorJitter'),
+                            ],
+                            type='RandomApply'),
+                        dict(
+                            channel_weights=(
+                                0.114,
+                                0.587,
+                                0.2989,
+                            ),
+                            keep_channels=True,
+                            prob=0.2,
+                            type='RandomGrayscale'),
+                        dict(
+                            magnitude_range=(
+                                0.1,
+                                2.0,
+                            ),
+                            magnitude_std='inf',
+                            prob=0.5,
+                            type='GaussianBlur'),
+                    ],
+                ],
+                type='MultiView'),
+            dict(type='PackInputs'),
+        ],
+        split='train',
+        type='CIFAR10'),
+    drop_last=True,
+    num_workers=4,
+    persistent_workers=True,
+    pin_memory=True,
+    sampler=dict(shuffle=True, type='DefaultSampler'))
+train_pipeline = [
+    dict(
+        num_views=[
+            1,
+            1,
+        ],
+        transforms=[
+            [
+                dict(
+                    backend='pillow',
+                    crop_ratio_range=(
+                        0.2,
+                        1.0,
+                    ),
+                    interpolation='bicubic',
+                    scale=32,
+                    type='RandomResizedCrop'),
+                dict(prob=0.5, type='RandomFlip'),
+                dict(
+                    prob=0.8,
+                    transforms=[
+                        dict(
+                            brightness=0.4,
+                            contrast=0.4,
+                            hue=0.1,
+                            saturation=0.4,
+                            type='ColorJitter'),
+                    ],
+                    type='RandomApply'),
+                dict(
+                    channel_weights=(
+                        0.114,
+                        0.587,
+                        0.2989,
+                    ),
+                    keep_channels=True,
+                    prob=0.2,
+                    type='RandomGrayscale'),
+                dict(
+                    magnitude_range=(
+                        0.1,
+                        2.0,
+                    ),
+                    magnitude_std='inf',
+                    prob=0.5,
+                    type='GaussianBlur'),
+            ],
+            [
+                dict(
+                    backend='pillow',
+                    crop_ratio_range=(
+                        0.2,
+                        1.0,
+                    ),
+                    interpolation='bicubic',
+                    scale=32,
+                    type='RandomResizedCrop'),
+                dict(prob=0.5, type='RandomFlip'),
+                dict(
+                    prob=0.8,
+                    transforms=[
+                        dict(
+                            brightness=0.4,
+                            contrast=0.4,
+                            hue=0.1,
+                            saturation=0.4,
+                            type='ColorJitter'),
+                    ],
+                    type='RandomApply'),
+                dict(
+                    channel_weights=(
+                        0.114,
+                        0.587,
+                        0.2989,
+                    ),
+                    keep_channels=True,
+                    prob=0.2,
+                    type='RandomGrayscale'),
+                dict(
+                    magnitude_range=(
+                        0.1,
+                        2.0,
+                    ),
+                    magnitude_std='inf',
+                    prob=0.5,
+                    type='GaussianBlur'),
+            ],
+        ],
+        type='MultiView'),
+    dict(type='PackInputs'),
+]
+view_pipeline = [
+    dict(
+        backend='pillow',
+        crop_ratio_range=(
+            0.2,
+            1.0,
+        ),
+        interpolation='bicubic',
+        scale=32,
+        type='RandomResizedCrop'),
+    dict(prob=0.5, type='RandomFlip'),
+    dict(
+        prob=0.8,
+        transforms=[
+            dict(
+                brightness=0.4,
+                contrast=0.4,
+                hue=0.1,
+                saturation=0.4,
+                type='ColorJitter'),
+        ],
+        type='RandomApply'),
+    dict(
+        channel_weights=(
+            0.114,
+            0.587,
+            0.2989,
+        ),
+        keep_channels=True,
+        prob=0.2,
+        type='RandomGrayscale'),
+    dict(
+        magnitude_range=(
+            0.1,
+            2.0,
+        ),
+        magnitude_std='inf',
+        prob=0.5,
+        type='GaussianBlur'),
+]
+vis_backends = [
+    dict(type='LocalVisBackend'),
+]
+visualizer = dict(
+    type='UniversalVisualizer', vis_backends=[
+        dict(type='LocalVisBackend'),
+    ])
+work_dir = '/home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar10'
+
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+01/21 13:31:25 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) VisualizationHook                  
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_test_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) VisualizationHook                  
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+Did not find last_checkpoint to be resumed.
+Did not find last_checkpoint to be resumed.
+01/21 13:31:28 - mmengine - INFO - Auto resumed from the latest checkpoint None.
+01/21 13:31:28 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+01/21 13:31:28 - mmengine - WARNING - "HardDiskBackend" is the alias of "LocalBackend" and the former will be deprecated in future.
+01/21 13:31:28 - mmengine - INFO - Checkpoints will be saved to /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar10.
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/image/photometric.py:134: UserWarning: Only use 'alpha' for pillow backend.
+  warnings.warn("Only use 'alpha' for pillow backend.")
+01/21 13:31:50 - mmengine - INFO - Epoch(train)  [1][100/195]  lr: 3.0520e-03  eta: 0:35:53  time: 0.2101  data_time: 0.0007  memory: 4021  loss: 7.7401
+01/21 13:32:10 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:32:10 - mmengine - INFO - Saving checkpoint at 1 epochs
+01/21 13:32:32 - mmengine - INFO - Epoch(train)  [2][100/195]  lr: 9.0575e-03  eta: 0:34:12  time: 0.2132  data_time: 0.0011  memory: 4021  loss: 7.5383
+01/21 13:32:52 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:32:52 - mmengine - INFO - Saving checkpoint at 2 epochs
+01/21 13:33:14 - mmengine - INFO - Epoch(train)  [3][100/195]  lr: 1.5063e-02  eta: 0:33:23  time: 0.2141  data_time: 0.0008  memory: 4021  loss: 7.3324
+01/21 13:33:35 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:33:35 - mmengine - INFO - Saving checkpoint at 3 epochs
+01/21 13:33:57 - mmengine - INFO - Epoch(train)  [4][100/195]  lr: 2.1069e-02  eta: 0:32:40  time: 0.2227  data_time: 0.0008  memory: 4021  loss: 7.2307
+01/21 13:34:17 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:34:17 - mmengine - INFO - Saving checkpoint at 4 epochs
+01/21 13:34:39 - mmengine - INFO - Epoch(train)  [5][100/195]  lr: 2.7074e-02  eta: 0:31:56  time: 0.2141  data_time: 0.0008  memory: 4021  loss: 7.0942
+01/21 13:35:00 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:35:00 - mmengine - INFO - Saving checkpoint at 5 epochs
+01/21 13:35:06 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:35:22 - mmengine - INFO - Epoch(train)  [6][100/195]  lr: 3.0000e-02  eta: 0:31:15  time: 0.2143  data_time: 0.0006  memory: 4021  loss: 6.9466
+01/21 13:35:43 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:35:43 - mmengine - INFO - Saving checkpoint at 6 epochs
+01/21 13:36:05 - mmengine - INFO - Epoch(train)  [7][100/195]  lr: 2.9963e-02  eta: 0:30:33  time: 0.2140  data_time: 0.0006  memory: 4021  loss: 6.9502
+01/21 13:36:25 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:36:25 - mmengine - INFO - Saving checkpoint at 7 epochs
+01/21 13:36:47 - mmengine - INFO - Epoch(train)  [8][100/195]  lr: 2.9854e-02  eta: 0:29:52  time: 0.2146  data_time: 0.0009  memory: 4021  loss: 6.8970
+01/21 13:37:08 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:37:08 - mmengine - INFO - Saving checkpoint at 8 epochs
+01/21 13:37:30 - mmengine - INFO - Epoch(train)  [9][100/195]  lr: 2.9672e-02  eta: 0:29:09  time: 0.2147  data_time: 0.0007  memory: 4021  loss: 6.8164
+01/21 13:37:51 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:37:51 - mmengine - INFO - Saving checkpoint at 9 epochs
+01/21 13:38:13 - mmengine - INFO - Epoch(train) [10][100/195]  lr: 2.9419e-02  eta: 0:28:28  time: 0.2161  data_time: 0.0006  memory: 4021  loss: 6.7094
+01/21 13:38:33 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:38:33 - mmengine - INFO - Saving checkpoint at 10 epochs
+01/21 13:38:45 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:38:56 - mmengine - INFO - Epoch(train) [11][100/195]  lr: 2.9095e-02  eta: 0:27:46  time: 0.2148  data_time: 0.0009  memory: 4021  loss: 6.6491
+01/21 13:39:16 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:39:16 - mmengine - INFO - Saving checkpoint at 11 epochs
+01/21 13:39:38 - mmengine - INFO - Epoch(train) [12][100/195]  lr: 2.8703e-02  eta: 0:27:04  time: 0.2150  data_time: 0.0009  memory: 4021  loss: 6.5829
+01/21 13:39:59 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:39:59 - mmengine - INFO - Saving checkpoint at 12 epochs
+01/21 13:40:21 - mmengine - INFO - Epoch(train) [13][100/195]  lr: 2.8244e-02  eta: 0:26:22  time: 0.2149  data_time: 0.0007  memory: 4021  loss: 6.5261
+01/21 13:40:41 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:40:41 - mmengine - INFO - Saving checkpoint at 13 epochs
+01/21 13:41:04 - mmengine - INFO - Epoch(train) [14][100/195]  lr: 2.7721e-02  eta: 0:25:40  time: 0.2152  data_time: 0.0006  memory: 4021  loss: 6.4328
+01/21 13:41:24 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:41:24 - mmengine - INFO - Saving checkpoint at 14 epochs
+01/21 13:41:46 - mmengine - INFO - Epoch(train) [15][100/195]  lr: 2.7135e-02  eta: 0:24:58  time: 0.2144  data_time: 0.0007  memory: 4021  loss: 6.4768
+01/21 13:42:07 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:42:07 - mmengine - INFO - Saving checkpoint at 15 epochs
+01/21 13:42:24 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:42:29 - mmengine - INFO - Epoch(train) [16][100/195]  lr: 2.6491e-02  eta: 0:24:16  time: 0.2149  data_time: 0.0008  memory: 4021  loss: 6.3888
+01/21 13:42:50 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:42:50 - mmengine - INFO - Saving checkpoint at 16 epochs
+01/21 13:43:12 - mmengine - INFO - Epoch(train) [17][100/195]  lr: 2.5790e-02  eta: 0:23:34  time: 0.2240  data_time: 0.0007  memory: 4021  loss: 6.3815
+01/21 13:43:33 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:43:33 - mmengine - INFO - Saving checkpoint at 17 epochs
+01/21 13:43:55 - mmengine - INFO - Epoch(train) [18][100/195]  lr: 2.5037e-02  eta: 0:22:52  time: 0.2217  data_time: 0.0011  memory: 4021  loss: 6.3461
+01/21 13:44:15 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:44:15 - mmengine - INFO - Saving checkpoint at 18 epochs
+01/21 13:44:37 - mmengine - INFO - Epoch(train) [19][100/195]  lr: 2.4235e-02  eta: 0:22:09  time: 0.2151  data_time: 0.0007  memory: 4021  loss: 6.2684
+01/21 13:44:58 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:44:58 - mmengine - INFO - Saving checkpoint at 19 epochs
+01/21 13:45:20 - mmengine - INFO - Epoch(train) [20][100/195]  lr: 2.3388e-02  eta: 0:21:28  time: 0.2154  data_time: 0.0007  memory: 4021  loss: 6.2434
+01/21 13:45:41 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:45:41 - mmengine - INFO - Saving checkpoint at 20 epochs
+01/21 13:46:03 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:46:03 - mmengine - INFO - Epoch(train) [21][100/195]  lr: 2.2500e-02  eta: 0:20:45  time: 0.2153  data_time: 0.0008  memory: 4021  loss: 6.1561
+01/21 13:46:23 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:46:23 - mmengine - INFO - Saving checkpoint at 21 epochs
+01/21 13:46:46 - mmengine - INFO - Epoch(train) [22][100/195]  lr: 2.1576e-02  eta: 0:20:03  time: 0.2149  data_time: 0.0007  memory: 4021  loss: 6.0992
+01/21 13:47:06 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:47:06 - mmengine - INFO - Saving checkpoint at 22 epochs
+01/21 13:47:28 - mmengine - INFO - Epoch(train) [23][100/195]  lr: 2.0619e-02  eta: 0:19:21  time: 0.2147  data_time: 0.0008  memory: 4021  loss: 6.0969
+01/21 13:47:49 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:47:49 - mmengine - INFO - Saving checkpoint at 23 epochs
+01/21 13:48:11 - mmengine - INFO - Epoch(train) [24][100/195]  lr: 1.9635e-02  eta: 0:18:39  time: 0.2219  data_time: 0.0008  memory: 4021  loss: 6.0834
+01/21 13:48:31 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:48:31 - mmengine - INFO - Saving checkpoint at 24 epochs
+01/21 13:48:54 - mmengine - INFO - Epoch(train) [25][100/195]  lr: 1.8629e-02  eta: 0:17:56  time: 0.2158  data_time: 0.0008  memory: 4021  loss: 5.9955
+01/21 13:49:14 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:49:14 - mmengine - INFO - Saving checkpoint at 25 epochs
+01/21 13:49:37 - mmengine - INFO - Epoch(train) [26][100/195]  lr: 1.7605e-02  eta: 0:17:14  time: 0.2149  data_time: 0.0006  memory: 4021  loss: 6.0135
+01/21 13:49:42 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:49:57 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:49:57 - mmengine - INFO - Saving checkpoint at 26 epochs
+01/21 13:50:19 - mmengine - INFO - Epoch(train) [27][100/195]  lr: 1.6568e-02  eta: 0:16:32  time: 0.2143  data_time: 0.0006  memory: 4021  loss: 5.9703
+01/21 13:50:40 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:50:40 - mmengine - INFO - Saving checkpoint at 27 epochs
+01/21 13:51:02 - mmengine - INFO - Epoch(train) [28][100/195]  lr: 1.5523e-02  eta: 0:15:50  time: 0.2217  data_time: 0.0009  memory: 4021  loss: 5.9846
+01/21 13:51:22 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:51:22 - mmengine - INFO - Saving checkpoint at 28 epochs
+01/21 13:51:45 - mmengine - INFO - Epoch(train) [29][100/195]  lr: 1.4477e-02  eta: 0:15:07  time: 0.2152  data_time: 0.0009  memory: 4021  loss: 5.8992
+01/21 13:52:05 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:52:05 - mmengine - INFO - Saving checkpoint at 29 epochs
+01/21 13:52:27 - mmengine - INFO - Epoch(train) [30][100/195]  lr: 1.3432e-02  eta: 0:14:25  time: 0.2140  data_time: 0.0008  memory: 4021  loss: 5.8708
+01/21 13:52:48 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:52:48 - mmengine - INFO - Saving checkpoint at 30 epochs
+01/21 13:53:10 - mmengine - INFO - Epoch(train) [31][100/195]  lr: 1.2395e-02  eta: 0:13:43  time: 0.2143  data_time: 0.0009  memory: 4021  loss: 5.8745
+01/21 13:53:21 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:53:30 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:53:30 - mmengine - INFO - Saving checkpoint at 31 epochs
+01/21 13:53:53 - mmengine - INFO - Epoch(train) [32][100/195]  lr: 1.1371e-02  eta: 0:13:01  time: 0.2157  data_time: 0.0011  memory: 4021  loss: 5.9122
+01/21 13:54:13 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:54:13 - mmengine - INFO - Saving checkpoint at 32 epochs
+01/21 13:54:35 - mmengine - INFO - Epoch(train) [33][100/195]  lr: 1.0365e-02  eta: 0:12:19  time: 0.2149  data_time: 0.0006  memory: 4021  loss: 5.8469
+01/21 13:54:56 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:54:56 - mmengine - INFO - Saving checkpoint at 33 epochs
+01/21 13:55:18 - mmengine - INFO - Epoch(train) [34][100/195]  lr: 9.3809e-03  eta: 0:11:36  time: 0.2148  data_time: 0.0008  memory: 4021  loss: 5.8225
+01/21 13:55:39 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:55:39 - mmengine - INFO - Saving checkpoint at 34 epochs
+01/21 13:56:01 - mmengine - INFO - Epoch(train) [35][100/195]  lr: 8.4244e-03  eta: 0:10:54  time: 0.2148  data_time: 0.0007  memory: 4021  loss: 5.8267
+01/21 13:56:21 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:56:21 - mmengine - INFO - Saving checkpoint at 35 epochs
+01/21 13:56:44 - mmengine - INFO - Epoch(train) [36][100/195]  lr: 7.5000e-03  eta: 0:10:12  time: 0.2159  data_time: 0.0009  memory: 4021  loss: 5.7983
+01/21 13:57:00 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:57:04 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:57:04 - mmengine - INFO - Saving checkpoint at 36 epochs
+01/21 13:57:26 - mmengine - INFO - Epoch(train) [37][100/195]  lr: 6.6121e-03  eta: 0:09:30  time: 0.2241  data_time: 0.0009  memory: 4021  loss: 5.7289
+01/21 13:57:47 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:57:47 - mmengine - INFO - Saving checkpoint at 37 epochs
+01/21 13:58:09 - mmengine - INFO - Epoch(train) [38][100/195]  lr: 5.7651e-03  eta: 0:08:47  time: 0.2149  data_time: 0.0008  memory: 4021  loss: 5.7726
+01/21 13:58:30 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:58:30 - mmengine - INFO - Saving checkpoint at 38 epochs
+01/21 13:58:52 - mmengine - INFO - Epoch(train) [39][100/195]  lr: 4.9630e-03  eta: 0:08:05  time: 0.2149  data_time: 0.0008  memory: 4021  loss: 5.7976
+01/21 13:59:12 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:59:12 - mmengine - INFO - Saving checkpoint at 39 epochs
+01/21 13:59:35 - mmengine - INFO - Epoch(train) [40][100/195]  lr: 4.2099e-03  eta: 0:07:23  time: 0.2154  data_time: 0.0008  memory: 4021  loss: 5.7466
+01/21 13:59:55 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 13:59:55 - mmengine - INFO - Saving checkpoint at 40 epochs
+01/21 14:00:17 - mmengine - INFO - Epoch(train) [41][100/195]  lr: 3.5093e-03  eta: 0:06:41  time: 0.2147  data_time: 0.0007  memory: 4021  loss: 5.7247
+01/21 14:00:38 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:00:38 - mmengine - INFO - Saving checkpoint at 41 epochs
+01/21 14:00:40 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:01:00 - mmengine - INFO - Epoch(train) [42][100/195]  lr: 2.8647e-03  eta: 0:05:58  time: 0.2154  data_time: 0.0007  memory: 4021  loss: 5.7817
+01/21 14:01:21 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:01:21 - mmengine - INFO - Saving checkpoint at 42 epochs
+01/21 14:01:43 - mmengine - INFO - Epoch(train) [43][100/195]  lr: 2.2793e-03  eta: 0:05:16  time: 0.2223  data_time: 0.0006  memory: 4021  loss: 5.6669
+01/21 14:02:04 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:02:04 - mmengine - INFO - Saving checkpoint at 43 epochs
+01/21 14:02:26 - mmengine - INFO - Epoch(train) [44][100/195]  lr: 1.7558e-03  eta: 0:04:34  time: 0.2224  data_time: 0.0008  memory: 4021  loss: 5.7488
+01/21 14:02:46 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:02:46 - mmengine - INFO - Saving checkpoint at 44 epochs
+01/21 14:03:08 - mmengine - INFO - Epoch(train) [45][100/195]  lr: 1.2968e-03  eta: 0:03:51  time: 0.2145  data_time: 0.0010  memory: 4021  loss: 5.7488
+01/21 14:03:29 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:03:29 - mmengine - INFO - Saving checkpoint at 45 epochs
+01/21 14:03:51 - mmengine - INFO - Epoch(train) [46][100/195]  lr: 9.0461e-04  eta: 0:03:09  time: 0.2144  data_time: 0.0009  memory: 4021  loss: 5.6700
+01/21 14:04:12 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:04:12 - mmengine - INFO - Saving checkpoint at 46 epochs
+01/21 14:04:19 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:04:34 - mmengine - INFO - Epoch(train) [47][100/195]  lr: 5.8107e-04  eta: 0:02:27  time: 0.2147  data_time: 0.0008  memory: 4021  loss: 5.6732
+01/21 14:04:55 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:04:55 - mmengine - INFO - Saving checkpoint at 47 epochs
+01/21 14:05:17 - mmengine - INFO - Epoch(train) [48][100/195]  lr: 3.2779e-04  eta: 0:01:45  time: 0.2234  data_time: 0.0007  memory: 4021  loss: 5.7003
+01/21 14:05:37 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:05:37 - mmengine - INFO - Saving checkpoint at 48 epochs
+01/21 14:06:00 - mmengine - INFO - Epoch(train) [49][100/195]  lr: 1.4598e-04  eta: 0:01:02  time: 0.2159  data_time: 0.0009  memory: 4021  loss: 5.6969
+01/21 14:06:20 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:06:20 - mmengine - INFO - Saving checkpoint at 49 epochs
+01/21 14:06:42 - mmengine - INFO - Epoch(train) [50][100/195]  lr: 3.6539e-05  eta: 0:00:20  time: 0.2143  data_time: 0.0006  memory: 4021  loss: 5.7466
+01/21 14:07:03 - mmengine - INFO - Exp name: mocov2_resnet50_2xb128-coslr-50e_cifar10_20260121_133123
+01/21 14:07:03 - mmengine - INFO - Saving checkpoint at 50 epochs
+=============================================
+Training complete!
+Checkpoints saved to: /home/hkoc/UM/UM_SEM9/how-to-probe/outputs/mocov2_cifar10
+=============================================
