@@ -69,7 +69,8 @@ def cache_examples():
     """
     Build and cache example selections for all model/dataset combinations.
     """
-    MODELS = ['resnet18', 'resnet34', 'resnet50']
+    MODELS = ['resnet18', 'resnet34']
+    # MODELS = ['resnet18', 'resnet34', 'resnet50']
     DATASETS = ['CIFAR10', 'CIFAR100', 'HardMNIST']
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     MODEL_DIR = "./models"

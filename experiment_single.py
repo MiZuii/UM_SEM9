@@ -42,7 +42,8 @@ def save_result(heatmap_tensor, original_image_tensor, save_path):
     Image.fromarray(original_image_resized).save(f"{save_path}_original.png")
 
 def run_single_experiment():
-    MODELS = ['resnet18', 'resnet34', 'resnet50']
+    MODELS = ['resnet18', 'resnet34']
+    # MODELS = ['resnet18', 'resnet34', 'resnet50']
     DATASETS = ['CIFAR10', 'CIFAR100', 'HardMNIST']
     METHODS = ['DiET', 'GradCAM', 'IG']
     EXAMPLE_TYPES = ['correct_confident', 'incorrect_confident', 'uncertain', 'arbitrary']
