@@ -1,0 +1,10 @@
+nohup: ignoring input
+Found images for 97/100 classes
+
+Creating 500 2x2 grid images...
+  Saved 500 2x2 grids to grid_pg_images_2x2_cifar100_dino
+
+Creating 500 3x3 grid images...
+  Saved 500 3x3 grids to grid_pg_images_3x3_cifar100_dino
+
+Done!

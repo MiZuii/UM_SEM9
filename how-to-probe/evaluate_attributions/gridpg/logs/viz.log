@@ -1,0 +1,16 @@
+nohup: ignoring input
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/mmcv/cnn/bricks/transformer.py:33: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv`` rather than ``mmcv-lite`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/captum/_utils/gradient.py:57: UserWarning: Input Tensor 0 did not already require gradients, required_grads has been set automatically.
+  warnings.warn(
+/home/hkoc/UM/UM_SEM9/how-to-probe/.venv/lib/python3.11/site-packages/captum/attr/_core/guided_backprop_deconvnet.py:64: UserWarning: Setting backward hooks on ReLU activations.The hooks will be removed after the attribution is finished
+  warnings.warn(
+Using device: cuda:0
+Files already downloaded and verified
+Selected samples: ['apple', 'couch', 'mouse', 'skunk']
+Loading byol...
+Loading dino...
+Loading mocov2...
+Saved: attribution_figures_cifar100/attribution_comparison_cifar100.png
+
+Done! Figures saved to attribution_figures_cifar100
