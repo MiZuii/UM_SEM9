@@ -439,7 +439,7 @@ def get_args():
     parser.add_argument('--dataset', default='CIFAR10', type=str, help='Dataset to use')
     parser.add_argument('--model', default='resnet34', type=str, help='Model architecture')
     parser.add_argument('--data_dir', default=f'{BASE}/data', type=str, help='Path to dataset directory')
-    parser.add_argument('--batch_size', default=32, type=int, help='Batch size for training')
+    parser.add_argument('--batch_size', default=128, type=int, help='Batch size for training')
     parser.add_argument('--test_batch_size', default=10, type=int, help='Batch size for testing')
     parser.add_argument('--num_workers', default=12, type=int, help='Number of workers for data loading')
     parser.add_argument('--epochs', default=10, type=int, help='Number of epochs to train for')
@@ -448,10 +448,10 @@ def get_args():
     parser.add_argument('--plot_path', default=f'{BASE}/pngs', type=str, help='Path to save the training plot')
 
     # DiET Specific Args
-    parser.add_argument("--mask_lr", default=300, type=float, help="DiET: mask learning rate")
+    parser.add_argument("--mask_lr", default=100, type=float, help="DiET: mask learning rate")
     parser.add_argument("--model_lr", default=0.0001, type=float, help="DiET: model learning rate")
-    parser.add_argument("--ups", default=32, type=int, help="DiET: upsample factor")
-    parser.add_argument("--r", default=1, type=int, help="DiET: number of rounding steps")
+    parser.add_argument("--ups", default=8, type=int, help="DiET: upsample factor")
+    parser.add_argument("--r", default=5, type=int, help="DiET: number of rounding steps")
     parser.add_argument("--diet_model_path", default=None, type=str, help="Path to pre-trained model for DiET (optional, defaults to save path)")
 
     args = parser.parse_args()

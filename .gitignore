@@ -1,12 +1,15 @@
 */.venv
 *.vscode
 */__pycache__/
+__pycache__
 */.pyc
 .DS_Store
 .env
 *.log
 .idea/
 .venv
+models
+models_backup
 
 # data
 DiET/data
